@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Philsound System | Events & Operations</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Favicon (Red Circle) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔴</text></svg>">
+    
+    <style>
+        /* 
+           PHILSOUND SYSTEM - RED THEME
+           Version: 3.0 Enterprise
+        */
+
+        :root {
+            --primary: #b91c1c;      /* Red 700 */
+            --primary-dark: #991b1b; /* Red 800 */
+            --primary-light: #fee2e2;/* Red 100 */
+            --accent: #f59e0b;       /* Amber for contrast */
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --text-dark: #1f2937;
+            --text-grey: #6b7280;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --danger: #ef4444;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
+        
+        /* --- UTILITIES --- */
+        .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .grid { display: grid; gap: 30px; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        
+        @media (max-width: 1024px) { .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; } }
+
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 12px 24px; border-radius: var(--radius); font-weight: 600;
+            font-size: 0.95rem; cursor: pointer; border: none; transition: var(--transition);
+            text-transform: uppercase; letter-spacing: 0.5px; gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3); }
+        .btn-accent { background: var(--accent); color: white; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: var(--primary); color: white; }
+        .btn-sm { padding: 8px 16px; font-size: 0.85rem; }
+        .btn-block { width: 100%; }
+
+        /* --- FORMS --- */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+        .input-control {
+            width: 100%; padding: 12px 16px; border: 1px solid var(--border);
+            border-radius: var(--radius); font-size: 1rem; background: var(--bg-white);
+            transition: var(--transition);
+        }
+        .input-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.1); }
+
+        /* --- PUBLIC NAVBAR --- */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; height: 80px;
+            background: rgba(255,255,255,0.98); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border); z-index: 1000;
+            display: flex; align-items: center;
+        }
+        .nav-logo { height: 50px; margin-right: 20px; }
+        .nav-links { display: flex; align-items: center; gap: 30px; }
+        .nav-link { font-weight: 500; color: var(--text-grey); transition: var(--transition); }
+        .nav-link:hover { color: var(--primary); }
+        
+        .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 10px; }
+        .nav-toggle span { width: 25px; height: 3px; background: var(--text-dark); border-radius: 2px; }
+        
+        @media (max-width: 900px) {
+            .nav-links { position: absolute; top: 80px; left: 0; width: 100%; background: white; flex-direction: column; padding: 20px; gap: 20px; border-top: 1px solid var(--border); display: none; box-shadow: var(--shadow-lg); }
+            .nav-links.active { display: flex; }
+            .nav-toggle { display: flex; }
+        }
+
+        /* --- SECTIONS --- */
+        section { padding: 100px 0; display: none; }
+        section.active { display: block; }
+        .section-header { text-align: center; margin-bottom: 60px; }
+        .section-header h2 { font-size: 2.5rem; margin-bottom: 15px; color: var(--text-dark); }
+        .section-header p { color: var(--text-grey); max-width: 600px; margin: 0 auto; }
+
+        /* --- HERO --- */
+        #home-section { background: linear-gradient(135deg, #fff 0%, var(--primary-light) 100%); min-height: 100vh; display: flex; align-items: center; }
+        .hero-content h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 25px; font-weight: 800; }
+        .hero-content h1 span { color: var(--primary); }
+        .hero-content p { font-size: 1.2rem; color: var(--text-grey); margin-bottom: 40px; max-width: 600px; }
+        
+        /* --- SERVICE CARDS --- */
+        .service-card {
+            background: white; border-radius: var(--radius); padding: 30px;
+            border: 1px solid var(--border); transition: var(--transition); position: relative; overflow: hidden;
+        }
+        .service-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+        .service-card h3 { font-size: 1.3rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .service-card h3 i { color: var(--primary); font-size: 1.5rem; width: 40px; height: 40px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .service-card p { font-size: 0.95rem; color: var(--text-grey); margin-bottom: 15px; }
+        .service-details { font-size: 0.9rem; color: var(--text-dark); background: var(--bg-light); padding: 15px; border-radius: var(--radius); margin-top: 15px; border-left: 4px solid var(--primary); }
+
+        /* --- BOOKING WIZARD --- */
+        .wizard-container { background: white; border-radius: 12px; box-shadow: var(--shadow-lg); overflow: hidden; }
+        .wizard-header { background: var(--primary); padding: 20px; color: white; }
+        .wizard-steps { display: flex; gap: 20px; justify-content: center; }
+        .wizard-step { display: flex; align-items: center; gap: 10px; opacity: 0.6; }
+        .wizard-step.active { opacity: 1; font-weight: bold; }
+        .step-number { width: 30px; height: 30px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .wizard-body { padding: 40px; }
+        .wizard-step-content { display: none; animation: fadeIn 0.5s; }
+        .wizard-step-content.active { display: block; }
+        
+        .dropdown-menu { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid var(--border); border-radius: var(--radius); max-height: 300px; overflow-y: auto; z-index: 100; box-shadow: var(--shadow-lg); display: none; }
+        .dropdown-menu.show { display: block; }
+        .dropdown-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid var(--bg-light); display: flex; justify-content: space-between; }
+        .dropdown-item:hover { background: var(--primary-light); }
+        
+        .selected-item { background: var(--bg-light); padding: 10px 15px; border-radius: var(--radius); margin-bottom: 8px; display: flex; justify-content: space-between; }
+
+        /* --- TICKETING --- */
+        .event-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); }
+        .event-card:hover { transform: translateY(-5px); }
+        .event-img { height: 180px; background: var(--primary-light); width: 100%; object-fit: cover; }
+        .event-body { padding: 20px; }
+        .event-date { color: var(--primary); font-weight: 700; font-size: 0.9rem; margin-bottom: 5px; }
+
+        /* --- ADMIN DASHBOARD --- */
+        #admin-section { display: none; height: 100vh; width: 100%; }
+        #admin-section.active { display: flex; }
+        
+        /* Sidebar */
+        .admin-sidebar { width: 260px; background: #111827; color: white; height: 100vh; position: fixed; left: 0; top: 0; display: flex; flex-direction: column; z-index: 1100; transition: transform 0.3s; }
+        .admin-sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 15px; }
+        .admin-sidebar-header img { height: 40px; }
+        .admin-menu { flex: 1; padding: 20px 0; }
+        .admin-menu-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: #9ca3af; transition: 0.2s; border-left: 4px solid transparent; }
+        .admin-menu-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .admin-menu-item.active { background: rgba(255,255,255,0.1); color: white; border-left-color: var(--primary); }
+        .admin-menu-item i { width: 20px; text-align: center; }
+
+        /* Responsive Sidebar */
+        @media (max-width: 768px) {
+            .admin-sidebar { transform: translateX(-100%); position: fixed; z-index: 2000; }
+            .admin-sidebar.mobile-active { transform: translateX(0); }
+            .admin-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; display: none; }
+            .admin-overlay.active { display: block; }
+        }
+
+        /* Main Content */
+        .admin-main { margin-left: 260px; flex: 1; padding: 30px; background: var(--bg-light); overflow-y: auto; }
+        @media (max-width: 768px) { .admin-main { margin-left: 0; padding-top: 80px; } }
+
+        /* Mobile Header */
+        .admin-mobile-header { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 70px; background: white; z-index: 1000; box-shadow: var(--shadow); justify-content: space-between; align-items: center; padding: 0 20px; }
+        @media (max-width: 768px) { .admin-mobile-header { display: flex; } }
+
+        /* Admin Cards & Tables */
+        .admin-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); padding: 25px; margin-bottom: 30px; }
+        .admin-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+        .table-wrapper { width: 100%; overflow-x: auto; }
+        .data-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); }
+        .data-table th { font-size: 0.85rem; text-transform: uppercase; color: var(--text-grey); background: var(--bg-light); }
+        
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+
+        /* --- MODALS --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal { background: white; width: 100%; max-width: 600px; border-radius: 8px; overflow: hidden; animation: slideIn 0.3s; }
+        .modal-header { padding: 15px 20px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 20px; max-height: 70vh; overflow-y: auto; }
+        .modal-footer { padding: 15px 20px; background: var(--bg-light); display: flex; justify-content: flex-end; gap: 10px; }
+        .close-btn { cursor: pointer; font-size: 1.5rem; line-height: 1; }
+
+        @media print { body * { visibility: hidden; } #invoice-print, #invoice-print * { visibility: visible; } #invoice-print { position: absolute; left: 0; top: 0; width: 100%; } }
+    </style>
+</head>
+<body>
+
+    <!-- PUBLIC NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="container flex items-center justify-between" style="width: 100%;">
+            <div class="flex items-center">
+                <img src="logo.png" alt="Philsound Logo" class="nav-logo">
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="#" class="nav-link" onclick="app.showSection('home')">Home</a>
+                <a href="#" class="nav-link" onclick="app.showSection('services')">Services</a>
+                <a href="#" class="nav-link" onclick="app.showSection('ticketing')">Events</a>
+                <a href="#" class="nav-link" onclick="app.showSection('booking')">Book Now</a>
+                <a href="#" class="btn btn-primary btn-sm" onclick="app.showLoginModal()">Admin</a>
+            </div>
+            <div class="nav-toggle" onclick="app.toggleMobileMenu()"><span></span><span></span><span></span></div>
+        </div>
+    </nav>
+
+    <!-- PUBLIC: HOME -->
+    <section id="home-section" class="active">
+        <div class="container">
+            <div class="hero-content" style="max-width: 700px;">
+                <h1>Professional <span>Event Solutions</span> Engineered.</h1>
+                <p>Sound, Visuals, Logistics, Catering, and Decoration. A full-service production house delivering standard yet custom solutions for events of any scale.</p>
+                <div class="flex" style="gap: 15px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="app.showSection('booking')">Build Your Event</button>
+                    <button class="btn btn-outline" onclick="app.showSection('services')">Explore Services</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PUBLIC: SERVICES -->
+    <section id="services-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Expertise</h2>
+                <p>Comprehensive solutions tailored to your vision.</p>
+            </div>
+            <div class="grid grid-3" id="servicesGrid"></div>
+        </div>
+    </section>
+
+    <!-- PUBLIC: TICKETING -->
+    <section id="ticketing-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Public Events</h2>
+                <p>Browse and book tickets for upcoming events managed by Philsound.</p>
+            </div>
+            <div class="grid grid-3" id="eventsGrid"></div>
+        </div>
+    </section>
+
+    <!-- PUBLIC: BOOKING WIZARD -->
+    <section id="booking-section">
+        <div class="container">
+            <div class="wizard-container">
+                <div class="wizard-header">
+                    <div class="wizard-steps">
+                        <div class="wizard-step active" data-step="1"><div class="step-number">1</div><span>Info</span></div>
+                        <div class="wizard-step" data-step="2"><div class="step-number">2</div><span>Equipment</span></div>
+                        <div class="wizard-step" data-step="3"><div class="step-number">3</div><span>Quote</span></div>
+                    </div>
+                </div>
+                <div class="wizard-body">
+                    <!-- Step 1 -->
+                    <div class="wizard-step-content active" id="step-1">
+                        <h3 style="margin-bottom: 20px;">Event Details</h3>
+                        <div class="grid grid-2">
+                            <div class="form-group"><label>Event Name</label><input type="text" class="input-control" id="eventName"></div>
+                            <div class="form-group"><label>Event Date</label><input type="date" class="input-control" id="eventDate"></div>
+                        </div>
+                        <div class="grid grid-2">
+                            <div class="form-group"><label>Venue / Location</label><input type="text" class="input-control" id="eventVenue"></div>
+                            <div class="form-group"><label>Expected Attendance</label><input type="number" class="input-control" id="eventAttendance"></div>
+                        </div>
+                        <div class="form-group"><label>Client Name / Org</label><input type="text" class="input-control" id="clientName"></div>
+                        <div class="grid grid-2">
+                            <div class="form-group"><label>Email</label><input type="email" class="input-control" id="clientEmail"></div>
+                            <div class="form-group"><label>Phone</label><input type="tel" class="input-control" id="clientPhone"></div>
+                        </div>
+                        <div class="flex justify-between" style="margin-top: 30px;">
+                            <div></div>
+                            <button class="btn btn-primary" onclick="app.nextStep(2)">Next: Select Equipment</button>
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="wizard-step-content" id="step-2">
+                        <h3 style="margin-bottom: 20px;">Equipment & Services</h3>
+                        <div class="grid grid-2" style="gap: 20px;">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select class="input-control" id="categorySelect" onchange="app.updateItemsList()">
+                                    <option value="">Select...</option>
+                                    <option value="sound">Sound Engineering</option>
+                                    <option value="visuals">Visuals & Media</option>
+                                    <option value="catering">Catering</option>
+                                    <option value="decoration">Decoration</option>
+                                    <option value="logistics">Logistics</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Item Search</label>
+                                <div style="position:relative;">
+                                    <input type="text" class="input-control" id="itemSearch" placeholder="Select category first..." onclick="app.toggleDropdown()" oninput="app.filterDropdownItems()" autocomplete="off">
+                                    <div class="dropdown-menu" id="itemDropdown"></div>
+                                </div>
+                            </div>
+                            <div class="form-group"><label>Qty</label><input type="number" class="input-control" id="itemQty" value="1"></div>
+                            <div class="form-group flex items-end"><button class="btn btn-accent btn-block" onclick="app.addItemToQuote()">Add to List</button></div>
+                        </div>
+                        <hr style="margin: 30px 0; border-color: var(--border);">
+                        <h4>Current Selection</h4>
+                        <div id="selectedItemsList"><p style="color: var(--text-grey); text-align: center; padding: 20px;">No items added.</p></div>
+                        <div class="flex justify-between" style="margin-top: 30px;">
+                            <button class="btn btn-outline" onclick="app.nextStep(1)">Back</button>
+                            <button class="btn btn-primary" onclick="app.nextStep(3)">Generate Quote</button>
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="wizard-step-content" id="step-3">
+                        <div id="invoice-print">
+                            <div class="invoice-box" style="background: white; border: 1px solid var(--border); padding: 40px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 40px; border-bottom: 2px solid var(--primary); padding-bottom: 20px;">
+                                    <div><img src="logo.png" style="height: 50px; margin-bottom: 10px;"><p>Professional Audiovisual & Events</p></div>
+                                    <div style="text-align: right;"><h3>QUOTE</h3><p id="invoiceNumber"></p><p id="invoiceDate"></p></div>
+                                </div>
+                                <div style="margin-bottom: 30px;"><h4>Client Details:</h4><p id="invoiceClientName"></p><p id="invoiceEventDetails"></p></div>
+                                <div class="table-wrapper">
+                                    <table class="data-table" style="min-width: 100%; border: 1px solid var(--border);">
+                                        <thead><tr style="background: var(--bg-light);"><th>Item</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr></thead>
+                                        <tbody id="invoiceItemsTable"></tbody>
+                                    </table>
+                                </div>
+                                <div style="text-align: right; font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-top: 20px;">Total: <span id="invoiceTotal">$0</span></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between" style="margin-top: 30px;">
+                            <button class="btn btn-outline" onclick="app.nextStep(2)">Back</button>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-outline" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+                                <button class="btn btn-primary" onclick="app.submitQuote()">Submit for Approval</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADMIN DASHBOARD -->
+    <section id="admin-section">
+        <div class="admin-overlay" id="adminOverlay" onclick="app.toggleAdminSidebar()"></div>
+        
+        <!-- Mobile Top Bar -->
+        <div class="admin-mobile-header">
+            <button class="btn btn-sm btn-outline" onclick="app.toggleAdminSidebar()"><i class="fas fa-bars"></i></button>
+            <img src="logo.png" style="height: 35px;">
+            <button class="btn btn-sm btn-outline" onclick="app.logout()"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-header">
+                <img src="logo.png" style="filter: brightness(0) invert(1);"> <!-- White logo for dark sidebar -->
+                <h3>Admin</h3>
+            </div>
+            <div class="admin-menu">
+                <div class="admin-menu-item active" onclick="app.showAdminTab('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</div>
+                <div class="admin-menu-item" onclick="app.showAdminTab('quotes')"><i class="fas fa-file-invoice-dollar"></i> Bookings & Quotes</div>
+                <div class="admin-menu-item" onclick="app.showAdminTab('events')"><i class="fas fa-calendar-alt"></i> Event Management</div>
+                <div class="admin-menu-item" onclick="app.showAdminTab('inventory')"><i class="fas fa-boxes"></i> Inventory</div>
+                <div class="admin-menu-item" onclick="app.showAdminTab('cms')"><i class="fas fa-paint-brush"></i> Website Settings</div>
+                <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px;">
+                    <button class="btn btn-outline btn-block" style="border-color: rgba(255,255,255,0.3); color: white;" onclick="app.logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="admin-main">
+            
+            <!-- Dashboard Tab -->
+            <div class="admin-tab active" id="tab-dashboard">
+                <h2 style="margin-bottom: 30px;">Dashboard Overview</h2>
+                <div class="grid grid-4">
+                    <div class="admin-card" style="border-left: 5px solid var(--primary);"><h3 id="stat-quotes">0</h3><p>New Quotes</p></div>
+                    <div class="admin-card" style="border-left: 5px solid var(--success);"><h3 id="stat-events">0</h3><p>Active Events</p></div>
+                    <div class="admin-card" style="border-left: 5px solid var(--accent);"><h3 id="stat-items">0</h3><p>Inventory Items</p></div>
+                    <div class="admin-card" style="border-left: 5px solid var(--text-grey);"><h3 id="stat-revenue">$0</h3><p>Est. Revenue</p></div>
+                </div>
+                <div class="admin-card">
+                    <h3>Recent Activity</h3>
+                    <p style="color: var(--text-grey); margin-top: 15px;">No recent activity to display.</p>
+                </div>
+            </div>
+
+            <!-- Quotes Tab -->
+            <div class="admin-tab" id="tab-quotes" style="display:none;">
+                <h2 style="margin-bottom: 30px;">Client Bookings & Quotes</h2>
+                <div class="admin-card">
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead><tr><th>Quote ID</th><th>Client</th><th>Event</th><th>Date</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody id="adminQuotesList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events Management Tab -->
+            <div class="admin-tab" id="tab-events" style="display:none;">
+                <div class="flex justify-between items-center" style="margin-bottom: 30px;">
+                    <h2>Event Management</h2>
+                    <button class="btn btn-primary" onclick="app.showModal('addEventModal')"><i class="fas fa-plus"></i> Create Public Event</button>
+                </div>
+                <div class="grid grid-3" id="adminEventsGrid"></div>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div class="admin-tab" id="tab-inventory" style="display:none;">
+                <div class="flex justify-between items-center" style="margin-bottom: 30px;">
+                    <h2>Inventory Database</h2>
+                    <button class="btn btn-primary" onclick="app.showModal('addInventoryModal')"><i class="fas fa-plus"></i> Add Item</button>
+                </div>
+                <div class="admin-card">
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Status</th></tr></thead>
+                            <tbody id="adminInventoryList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CMS Tab -->
+            <div class="admin-tab" id="tab-cms" style="display:none;">
+                <h2 style="margin-bottom: 30px;">Homepage Settings</h2>
+                <div class="admin-card">
+                    <div class="form-group">
+                        <label>Homepage Title</label>
+                        <input type="text" class="input-control" id="cmsTitle" value="Professional Event Solutions Engineered.">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="input-control" rows="3" id="cmsDesc">Full-service production house.</textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="app.updateCMS()">Save Changes</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- MODALS -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <div class="modal-header"><h3><i class="fas fa-lock"></i> Admin Login</h3><span class="close-btn" onclick="app.hideModal('loginModal')">&times;</span></div>
+            <div class="modal-body">
+                <div class="form-group"><label>Username</label><input type="text" class="input-control" id="loginUser" value="admin"></div>
+                <div class="form-group"><label>Password</label><input type="password" class="input-control" id="loginPass" value="admin123"></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-primary btn-block" onclick="app.login()">Login</button></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="approveModal">
+        <div class="modal">
+            <div class="modal-header" style="background: var(--success);"><h3>Approve Booking</h3><span class="close-btn" onclick="app.hideModal('approveModal')">&times;</span></div>
+            <div class="modal-body">
+                <p>You are about to approve this quote.</p>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label><input type="checkbox" id="checkPublic"> Publish as Public Ticketed Event?</label>
+                </div>
+                <div id="publicEventFields" style="display:none; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px;">
+                    <div class="form-group"><label>Ticket Price ($)</label><input type="number" class="input-control" id="publishPrice"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-accent" onclick="app.confirmApproval()">Confirm Approval</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addInventoryModal">
+        <div class="modal">
+            <div class="modal-header"><h3>Add Inventory</h3><span class="close-btn" onclick="app.hideModal('addInventoryModal')">&times;</span></div>
+            <div class="modal-body">
+                <div class="form-group"><label>Name</label><input type="text" class="input-control" id="newItemName"></div>
+                <div class="form-group"><label>Category</label>
+                    <select class="input-control" id="newItemCat">
+                        <option value="sound">Sound</option><option value="visuals">Visuals</option>
+                        <option value="catering">Catering</option><option value="decoration">Decoration</option><option value="logistics">Logistics</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Price ($)</label><input type="number" class="input-control" id="newItemPrice"></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-accent" onclick="app.addInventoryItem()">Add</button></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addEventModal">
+        <div class="modal">
+            <div class="modal-header"><h3>Create Event</h3><span class="close-btn" onclick="app.hideModal('addEventModal')">&times;</span></div>
+            <div class="modal-body">
+                <div class="form-group"><label>Event Name</label><input type="text" class="input-control" id="newEventName"></div>
+                <div class="form-group"><label>Date</label><input type="date" class="input-control" id="newEventDate"></div>
+                <div class="form-group"><label>Ticket Price ($)</label><input type="number" class="input-control" id="newEventPrice"></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-accent" onclick="app.addEvent()">Create</button></div>
+        </div>
+    </div>
+
+    <script>
+        /* --- DATA ENGINE --- */
+        const DB = { get: (k) => JSON.parse(localStorage.getItem(k)) || [], set: (k, v) => localStorage.setItem(k, JSON.stringify(v)) };
+
+        /* --- INVENTORY (Detailed) --- */
+        const MASTER_INVENTORY = {
+            sound: [
+                { name: "Shure SM58 Dynamic Mic", price: 25 }, { name: "Shure SM57 Instrument Mic", price: 25 }, { name: "Sennheiser e935 Vocal Mic", price: 30 },
+                { name: "AKG D112 Kick Drum Mic", price: 40 }, { name: "Rode NT1-A Condenser", price: 35 }, { name: "Behringer X32 Digital Mixer", price: 250 },
+                { name: "Midas M32 Digital Console", price: 400 }, { name: "Yamaha TF5 Mixer", price: 350 }, { name: "QSC K12.2 Active Speaker", price: 100 },
+                { name: "RCF HDL 10-A Line Array", price: 150 }, { name: "JBL PRX815 Subwoofer", price: 120 }, { name: "Shure PSM300 IEM System", price: 80 },
+                { name: "Sennheiser EW 300 IEM G4", price: 90 }, { name: "DBX Driverack PA2", price: 50 }, { name: "XLR Cable 50ft", price: 8 },
+                { name: "Microphone Stand Boom", price: 10 }, { name: "32ch Stage Box Snake", price: 200 }, { name: "DI Box Active", price: 15 }
+            ],
+            visuals: [
+                { name: "Sony A7III Camera Kit", price: 200 }, { name: "Canon C300 Mark III", price: 500 }, { name: "Blackmagic URSA Mini Pro", price: 450 },
+                { name: "PTZOptics 30X Camera", price: 150 }, { name: "Blackmagic ATEM Mini Extreme ISO", price: 250 }, { name: "vMix HD License", price: 80 },
+                { name: "Teradek Bolt 4K Wireless", price: 200 }, { name: "Aputure 600d Pro Light", price: 120 }, { name: "ARRI Skypanel S60-C", price: 180 },
+                { name: "Chauvet Rogue R3 Beam", price: 100 }, { name: "Epson Pro L30000U Projector", price: 500 }, { name: "LED Wall P2.9 (per sqm)", price: 100 },
+                { name: "High End Systems Technobeam", price: 120 }, { name: "GrandMA2 Command Wing", price: 300 }, { name: "Green Screen Setup", price: 80 }
+            ],
+            catering: [
+                { name: "Gourmet Buffet Package (pp)", price: 40 }, { name: "Standard Corporate Lunch (pp)", price: 20 }, { name: "Executive Bento Box", price: 18 },
+                { name: "BBQ Grill Station Rental", price: 300 }, { name: "Coffee Station Setup", price: 150 }, { name: "Espresso Bar Service (hr)", price: 100 },
+                { name: "Fresh Juice Station", price: 120 }, { name: "Wedding Cake 3-Tier", price: 500 }, { name: "Dessert Station Setup", price: 200 },
+                { name: "Wait Staff Service (per hr)", price: 25 }, { name: "Tent Marquee 10x10m", price: 800 }, { name: "Round Table Rental", price: 15 },
+                { name: "Chiavari Chair Rental", price: 8 }, { name: "Full Bar Service (per hr)", price: 150 }, { name: "Water Dispenser Station", price: 30 }
+            ],
+            decoration: [
+                { name: "Fresh Flower Centerpiece", price: 60 }, { name: "Stage Backdrop Floral Wall", price: 1000 }, { name: "Custom Silk Arrangement", price: 200 },
+                { name: "Red Carpet Runner 30ft", price: 100 }, { name: "Fairy Lights Canopy (per sqm)", price: 15 }, { name: "Edison Bulb String Lights", price: 30 },
+                { name: "Balloon Arch Custom Design", price: 250 }, { name: "Cold Spark Machine (Forge)", price: 150 }, { name: "Deco Curtains Velvet Red", price: 150 },
+                { name: "Rustic Arch Rental", price: 300 }, { name: "LED Dance Floor (per panel)", price: 60 }, { name: "Neon Sign Custom Rental", price: 180 },
+                { name: "Photo Booth Setup", price: 300 }, { name: "Gobo Light Monogram", price: 120 }, { name: "Mirror Ball Disco Setup", price: 50 }
+            ],
+            logistics: [
+                { name: "Toyota Hiace Shuttle Bus", price: 350 }, { name: "25-Seater Mini Bus", price: 450 }, { name: "50-Seater Coach Bus", price: 900 },
+                { name: "Double Cabin Pickup", price: 120 }, { name: "5-Ton Truck (Equipment)", price: 300 }, { name: "10-Ton Truck (Crusade)", price: 500 },
+                { name: "Prime Mover Lowbed", price: 1200 }, { name: "Luxury SUV Transfer", price: 150 }, { name: "Generator 50kVA Silent", price: 400 },
+                { name: "Portable Toilet VIP Unit", price: 150 }, { name: "Security Guard (per shift)", price: 50 }, { name: "Walkie Talkie Set (4 units)", price: 50 },
+                { name: "WiFi Hotspot High Speed", price: 40 }, { name: "Road Case Large Flight Case", price: 25 }, { name: "Event Insurance Package", price: 150 }
+            ]
+        };
+
+        const SERVICES_DATA = [
+            { 
+                title: "Sound Engineering", icon: "fa-volume-high",
+                desc: "Crystal clear audio for live concerts, conferences, and crusades.",
+                details: "Our audio division provides Monitor Engineering, FOH mixing, Broadcast Sound Engineering, and Band IEM Mixing. We handle everything from small meetings to large festival stages with line arrays and digital consoles."
+            },
+            { 
+                title: "Visuals & Media", icon: "fa-video",
+                desc: "Live streaming, LED screens, and projection mapping.",
+                details: "We specialize in multi-camera live streaming, massive LED screen setups, high-lumen projection, and full lighting design (Stage lights, moving heads). We also offer CCTV installation and WiFi/LAN network configuration for events."
+            },
+            { 
+                title: "Catering Services", icon: "fa-utensils",
+                desc: "Gourmet buffets, packed lunches, and custom orders.",
+                details: "From outdoor crusade feeding to high-end corporate dinners. We offer packed fast foods, prepare-per-order meals, and full service buffets. Our team manages the entire food chain from prep to service."
+            },
+            { 
+                title: "Decoration", icon: "fa-palette",
+                desc: "Custom themes, florals, and lighting design.",
+                details: "Comprehensive decoration services including live and custom made flowers, deco curtains, deco lights, red carpet setups, and full stage transformations. We handle weddings, corporate launches, and concerts."
+            },
+            { 
+                title: "Logistics & Transport", icon: "fa-truck",
+                desc: "Fleet management for equipment and guests.",
+                details: "We provide big trucks for crusades, vans for crew, luxury buses for guests, and shuttles for tourists. Our logistics team ensures timely arrival and setup of all equipment."
+            },
+            { 
+                title: "Videography & Drones", icon: "fa-film",
+                desc: "Cinematic capture and aerial footage.",
+                details: "High-end videography using cinema cameras (RED, Blackmagic) and drone pilots for aerial shots. We offer full post-production, editing, and social media optimization packages."
+            }
+        ];
+
+        /* --- APP LOGIC --- */
+        const app = {
+            state: { currentQuote: { info: {}, items: [] }, inventory: [], events: [], quotes: [] },
+
+            init: function() {
+                // Initialize or Load Data
+                if (!localStorage.getItem('ps_inventory')) DB.set('ps_inventory', this.flattenInventory());
+                this.state.inventory = DB.get('ps_inventory');
+                this.state.events = DB.get('ps_events') || [];
+                this.state.quotes = DB.get('ps_quotes') || [];
+
+                // Render Views
+                this.renderServices();
+                this.renderPublicEvents();
+                this.renderAdminInventory();
+                this.renderAdminEvents();
+                this.renderAdminQuotes();
+                this.updateStats();
+            },
+
+            flattenInventory: function() {
+                let arr = []; let id = 1;
+                for (let cat in MASTER_INVENTORY) {
+                    MASTER_INVENTORY[cat].forEach(item => arr.push({ ...item, id: id++, category: cat }));
+                }
+                return arr;
+            },
+
+            showSection: function(id) {
+                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+                document.getElementById(id + '-section').classList.add('active');
+                window.scrollTo(0, 0);
+            },
+
+            toggleMobileMenu: function() { document.getElementById('navLinks').classList.toggle('active'); },
+
+            /* --- SERVICES --- */
+            renderServices: function() {
+                const grid = document.getElementById('servicesGrid');
+                grid.innerHTML = SERVICES_DATA.map(s => `
+                    <div class="service-card" onclick="this.querySelector('.service-details').classList.toggle('active')" style="cursor: pointer;">
+                        <h3><i class="fas ${s.icon}"></i> ${s.title}</h3>
+                        <p>${s.desc}</p>
+                        <div class="service-details" style="display: none;">
+                            <p>${s.details}</p>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Add logic to toggle details visibility
+                document.querySelectorAll('.service-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const details = card.querySelector('.service-details');
+                        details.style.display = details.style.display === 'block' ? 'none' : 'block';
+                    });
+                });
+            },
+
+            /* --- BOOKING WIZARD --- */
+            nextStep: function(step) {
+                document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+                document.querySelector(`.wizard-step[data-step="${step}"]`).classList.add('active');
+                document.querySelectorAll('.wizard-step-content').forEach(c => c.classList.remove('active'));
+                document.getElementById('step-' + step).classList.add('active');
+                if (step === 3) this.generateInvoice();
+            },
+
+            updateItemsList: function() {
+                const cat = document.getElementById('categorySelect').value;
+                document.getElementById('itemSearch').value = '';
+                document.getElementById('itemSearch').disabled = !cat;
+                document.getElementById('itemSearch').placeholder = cat ? 'Search ' + cat : 'Select category first';
+                document.getElementById('itemDropdown').innerHTML = '';
+                if (cat) this.renderDropdownItems(cat);
+            },
+
+            toggleDropdown: function() { if (document.getElementById('categorySelect').value) document.getElementById('itemDropdown').classList.toggle('show'); },
+            
+            renderDropdownItems: function(cat, filter = '') {
+                const dropdown = document.getElementById('itemDropdown');
+                dropdown.innerHTML = '';
+                const items = this.state.inventory.filter(i => i.category === cat && i.name.toLowerCase().includes(filter.toLowerCase()));
+                items.forEach(item => { dropdown.innerHTML += `<div class="dropdown-item" onclick="app.selectItem(${item.id})"><span>${item.name}</span><strong>$${item.price}</strong></div>`; });
+            },
+
+            filterDropdownItems: function() { this.renderDropdownItems(document.getElementById('categorySelect').value, document.getElementById('itemSearch').value); document.getElementById('itemDropdown').classList.add('show'); },
+            
+            selectItem: function(id) {
+                const item = this.state.inventory.find(i => i.id === id);
+                document.getElementById('itemSearch').value = item.name;
+                document.getElementById('itemSearch').dataset.selectedId = id;
+                document.getElementById('itemDropdown').classList.remove('show');
+            },
+
+            addItemToQuote: function() {
+                const id = parseInt(document.getElementById('itemSearch').dataset.selectedId);
+                const qty = parseInt(document.getElementById('itemQty').value);
+                if (!id || !qty) return alert("Select item and qty");
+                const itemData = this.state.inventory.find(i => i.id === id);
+                const existing = this.state.currentQuote.items.find(i => i.id === id);
+                if (existing) existing.qty += qty; else this.state.currentQuote.items.push({ ...itemData, qty: qty });
+                this.renderSelectedItems();
+                document.getElementById('itemSearch').value = '';
+            },
+
+            renderSelectedItems: function() {
+                const container = document.getElementById('selectedItemsList');
+                if (this.state.currentQuote.items.length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--text-grey);">No items.</p>'; return; }
+                container.innerHTML = this.state.currentQuote.items.map(item => `
+                    <div class="selected-item">
+                        <div><strong>${item.name}</strong> x ${item.qty}</div>
+                        <div><span style="font-weight:bold;">$${item.price * item.qty}</span> <span style="color:var(--danger); cursor:pointer; margin-left:10px;" onclick="app.removeItem(${item.id})">X</span></div>
+                    </div>
+                `).join('');
+            },
+
+            removeItem: function(id) { this.state.currentQuote.items = this.state.currentQuote.items.filter(i => i.id !== id); this.renderSelectedItems(); },
+
+            generateInvoice: function() {
+                this.state.currentQuote.info = {
+                    name: document.getElementById('clientName').value || 'Client',
+                    email: document.getElementById('clientEmail').value || 'Email',
+                    event: document.getElementById('eventName').value || 'Event',
+                    venue: document.getElementById('eventVenue').value || 'Venue',
+                    date: document.getElementById('eventDate').value || 'TBD'
+                };
+                document.getElementById('invoiceClientName').innerText = this.state.currentQuote.info.name;
+                document.getElementById('invoiceEventDetails').innerText = `${this.state.currentQuote.info.event} at ${this.state.currentQuote.info.venue}`;
+                document.getElementById('invoiceDate').innerText = new Date().toLocaleDateString();
+                document.getElementById('invoiceNumber').innerText = 'QUO-' + Date.now().toString().slice(-6);
+                let total = 0;
+                document.getElementById('invoiceItemsTable').innerHTML = this.state.currentQuote.items.map(item => {
+                    const sub = item.price * item.qty; total += sub; return `<tr><td>${item.name}</td><td>${item.qty}</td><td>$${item.price}</td><td>$${sub}</td></tr>`;
+                }).join('');
+                document.getElementById('invoiceTotal').innerText = '$' + total;
+            },
+
+            submitQuote: function() {
+                const quote = { id: Date.now(), info: this.state.currentQuote.info, items: this.state.currentQuote.items, total: document.getElementById('invoiceTotal').innerText, status: 'Pending' };
+                this.state.quotes.push(quote);
+                DB.set('ps_quotes', this.state.quotes);
+                this.renderAdminQuotes();
+                alert('Quote Submitted! We will contact you shortly.');
+                this.state.currentQuote.items = [];
+                this.showSection('home');
+            },
+
+            /* --- ADMIN LOGIC --- */
+            showLoginModal: function() { document.getElementById('loginModal').style.display = 'flex'; },
+            hideModal: function(id) { document.getElementById(id).style.display = 'none'; },
+            showModal: function(id) { document.getElementById(id).style.display = 'flex'; },
+
+            login: function() {
+                if (document.getElementById('loginUser').value === 'admin' && document.getElementById('loginPass').value === 'admin123') {
+                    this.hideModal('loginModal');
+                    document.getElementById('navbar').style.display = 'none';
+                    document.getElementById('admin-section').classList.add('active');
+                    this.updateStats();
+                } else alert('Wrong credentials');
+            },
+
+            logout: function() {
+                document.getElementById('navbar').style.display = 'flex';
+                document.getElementById('admin-section').classList.remove('active');
+                this.showSection('home');
+            },
+
+            toggleAdminSidebar: function() {
+                document.getElementById('adminSidebar').classList.toggle('mobile-active');
+                document.getElementById('adminOverlay').classList.toggle('active');
+            },
+
+            showAdminTab: function(tab) {
+                document.querySelectorAll('.admin-tab').forEach(t => t.style.display = 'none');
+                document.getElementById('tab-' + tab).style.display = 'block';
+                document.querySelectorAll('.admin-menu-item').forEach(m => m.classList.remove('active'));
+                event.target.closest('.admin-menu-item').classList.add('active');
+                if(window.innerWidth <= 768) this.toggleAdminSidebar();
+            },
+
+            updateStats: function() {
+                document.getElementById('stat-quotes').innerText = this.state.quotes.filter(q => q.status === 'Pending').length;
+                document.getElementById('stat-events').innerText = this.state.events.length;
+                document.getElementById('stat-items').innerText = this.state.inventory.length;
+                
+                let rev = 0;
+                this.state.quotes.forEach(q => { rev += parseFloat(q.total.replace('$','')) || 0; });
+                document.getElementById('stat-revenue').innerText = '$' + rev.toLocaleString();
+            },
+
+            renderAdminQuotes: function() {
+                document.getElementById('adminQuotesList').innerHTML = this.state.quotes.map(q => `
+                    <tr>
+                        <td>QUO-${q.id.toString().slice(-4)}</td>
+                        <td>${q.info.name}<br><small>${q.info.email}</small></td>
+                        <td>${q.info.event}</td>
+                        <td>${q.info.date}</td>
+                        <td>${q.total}</td>
+                        <td><span class="badge ${q.status === 'Pending' ? 'badge-warning' : 'badge-success'}">${q.status}</span></td>
+                        <td>
+                            ${q.status === 'Pending' ? `<button class='btn btn-primary btn-sm' onclick="app.openApprovalModal(${q.id})">Approve</button>` : '<small>Completed</small>'}
+                        </td>
+                    </tr>
+                `).join('');
+            },
+
+            openApprovalModal: function(id) {
+                this.state.selectedQuoteId = id;
+                this.showModal('approveModal');
+                document.getElementById('checkPublic').checked = false;
+                document.getElementById('publicEventFields').style.display = 'none';
+            },
+
+            confirmApproval: function() {
+                const qId = this.state.selectedQuoteId;
+                const quote = this.state.quotes.find(q => q.id === qId);
+                
+                // Update Quote Status
+                quote.status = 'Approved';
+                DB.set('ps_quotes', this.state.quotes);
+                
+                // Check if should create event
+                if (document.getElementById('checkPublic').checked) {
+                    const ticketPrice = parseFloat(document.getElementById('publishPrice').value) || 20;
+                    const newEvent = {
+                        id: Date.now(),
+                        name: quote.info.event,
+                        date: quote.info.date,
+                        price: ticketPrice,
+                        tickets: 100, // Default inventory
+                        sourceQuote: qId
+                    };
+                    this.state.events.push(newEvent);
+                    DB.set('ps_events', this.state.events);
+                    this.renderPublicEvents();
+                    this.renderAdminEvents();
+                }
+
+                this.renderAdminQuotes();
+                this.updateStats();
+                this.hideModal('approveModal');
+                alert('Booking Approved and Receipt Sent.');
+            },
+
+            renderPublicEvents: function() {
+                const grid = document.getElementById('eventsGrid');
+                if (this.state.events.length === 0) {
+                    grid.innerHTML = '<p style="color: var(--text-grey);">No public events scheduled.</p>';
+                    return;
+                }
+                grid.innerHTML = this.state.events.map(e => `
+                    <div class="event-card">
+                        <div style="height: 140px; background: var(--primary-light); display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-calendar-star" style="font-size: 3rem; color: var(--primary);"></i>
+                        </div>
+                        <div class="event-body">
+                            <div class="event-date"><i class="fas fa-clock"></i> ${e.date}</div>
+                            <h3 style="margin-bottom: 10px;">${e.name}</h3>
+                            <div class="flex justify-between items-center">
+                                <h2 style="color: var(--primary);">$${e.price}</h2>
+                                <button class="btn btn-primary btn-sm">Buy Ticket</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            },
+
+            renderAdminEvents: function() {
+                const grid = document.getElementById('adminEventsGrid');
+                grid.innerHTML = this.state.events.map(e => `
+                    <div class="admin-card">
+                        <h4>${e.name}</h4>
+                        <p>${e.date}</p>
+                        <p>Price: $${e.price}</p>
+                        <p>Tickets: ${e.tickets}</p>
+                    </div>
+                `).join('');
+            },
+
+            addEvent: function() {
+                this.state.events.push({
+                    id: Date.now(),
+                    name: document.getElementById('newEventName').value,
+                    date: document.getElementById('newEventDate').value,
+                    price: parseFloat(document.getElementById('newEventPrice').value),
+                    tickets: 100
+                });
+                DB.set('ps_events', this.state.events);
+                this.renderAdminEvents();
+                this.renderPublicEvents();
+                this.hideModal('addEventModal');
+                this.updateStats();
+            },
+
+            renderAdminInventory: function() {
+                document.getElementById('adminInventoryList').innerHTML = this.state.inventory.slice(0, 100).map(i => `
+                    <tr><td>${i.name}</td><td>${i.category}</td><td>$${i.price}</td><td><span class="badge badge-success">Available</span></td></tr>
+                `).join('');
+            },
+
+            addInventoryItem: function() {
+                this.state.inventory.push({
+                    id: Date.now(),
+                    name: document.getElementById('newItemName').value,
+                    category: document.getElementById('newItemCat').value,
+                    price: parseFloat(document.getElementById('newItemPrice').value)
+                });
+                DB.set('ps_inventory', this.state.inventory);
+                this.renderAdminInventory();
+                this.hideModal('addInventoryModal');
+                this.updateStats();
+            },
+
+            updateCMS: function() {
+                document.querySelector('#home-section h1 span').innerText = document.getElementById('cmsTitle').value;
+                document.querySelector('#home-section p').innerText = document.getElementById('cmsDesc').value;
+                alert('Homepage updated!');
+            }
+        };
+
+        window.onload = function() { app.init(); };
+    </script>
+</body>
+</html>
