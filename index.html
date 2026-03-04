@@ -6,42 +6,44 @@
     <title>Philsound System | Events & Operations</title>
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Favicon (Red Circle) -->
+    <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔴</text></svg>">
     
     <style>
         /* 
            PHILSOUND SYSTEM - RED THEME
-           Version: 5.0 Enterprise (Mobile App Style)
+           Version: 7.0 (Seamless Navigation & Centered Home)
         */
 
         :root {
             --primary: #b91c1c;      /* Red 700 */
-            --primary-dark: #991b1b; /* Red 800 */
-            --primary-light: #fee2e2;/* Red 100 */
-            --accent: #f59e0b;       /* Amber */
+            --primary-dark: #991b1b;
+            --primary-light: #fee2e2;
+            --accent: #f59e0b;
             --bg-light: #f8f9fa;
+            --bg-dark: #111827;
             --bg-white: #ffffff;
             --text-dark: #1f2937;
             --text-grey: #6b7280;
             --border: #e5e7eb;
             --success: #10b981;
-            --danger: #ef4444;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             --radius: 8px;
             --transition: all 0.3s ease;
+            --sidebar-width: 260px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-        html { scroll-behavior: smooth; }
-        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; padding-bottom: 70px; /* Space for mobile bottom nav */ }
+        html, body { height: 100%; overflow: hidden; } /* Prevent scrolling on body */
+        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.6; }
         a { text-decoration: none; color: inherit; }
         
         /* --- UTILITIES --- */
         .container { width: 100%; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
         .flex { display: flex; }
         .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
         .justify-between { justify-content: space-between; }
         .grid { display: grid; gap: 30px; }
         .grid-2 { grid-template-columns: repeat(2, 1fr); }
@@ -54,29 +56,18 @@
         /* --- BUTTONS --- */
         .btn {
             display: inline-flex; align-items: center; justify-content: center;
-            padding: 12px 24px; border-radius: var(--radius); font-weight: 600;
-            font-size: 0.95rem; cursor: pointer; border: none; transition: var(--transition);
-            text-transform: uppercase; letter-spacing: 0.5px; gap: 8px;
+            padding: 14px 28px; border-radius: var(--radius); font-weight: 600;
+            font-size: 1rem; cursor: pointer; border: none; transition: var(--transition);
+            text-transform: uppercase; letter-spacing: 0.5px; gap: 10px;
         }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(185, 28, 28, 0.3); }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(185, 28, 28, 0.2); }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
         .btn-accent { background: var(--accent); color: white; }
         .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
         .btn-outline:hover { background: var(--primary); color: white; }
         .btn-sm { padding: 8px 16px; font-size: 0.85rem; }
-        .btn-block { width: 100%; }
 
-        /* --- FORMS --- */
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
-        .input-control {
-            width: 100%; padding: 12px 16px; border: 1px solid var(--border);
-            border-radius: var(--radius); font-size: 1rem; background: var(--bg-white);
-            transition: var(--transition);
-        }
-        .input-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.1); }
-
-        /* --- NAVBAR (Desktop) --- */
+        /* --- NAVBAR --- */
         .navbar {
             position: fixed; top: 0; left: 0; width: 100%; height: 80px;
             background: rgba(255,255,255,0.98); backdrop-filter: blur(10px);
@@ -85,146 +76,121 @@
         }
         .nav-logo-link { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .nav-logo-img { height: 45px; object-fit: contain; }
-        .nav-logo-text { font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: 1px; }
+        .nav-logo-text { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
         
         .nav-links { display: flex; align-items: center; gap: 25px; }
         .nav-link { font-weight: 500; color: var(--text-grey); transition: var(--transition); cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .nav-link i { font-size: 1.1rem; }
         .nav-link:hover { color: var(--primary); }
         
-        /* Mobile Toggle (Hamburger) - Hidden by default */
-        .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 10px; }
-        .nav-toggle span { width: 25px; height: 3px; background: var(--text-dark); border-radius: 2px; }
+        /* Mobile Bottom Navigation */
+        .mobile-bottom-nav { display: none; }
         
-        /* --- MOBILE BOTTOM NAVIGATION (Icons) --- */
-        .mobile-bottom-nav {
-            display: none; /* Hidden on desktop */
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            height: 65px;
-            background: white;
-            border-top: 1px solid var(--border);
-            z-index: 1001;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-            justify-content: space-around;
-            align-items: center;
-            padding: 0 5px;
-        }
-        
-        .bottom-nav-item {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            width: 20%; height: 100%;
-            color: var(--text-grey);
-            cursor: pointer;
-            transition: 0.2s;
-            text-decoration: none;
-        }
-        .bottom-nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
-        .bottom-nav-item span { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
-        .bottom-nav-item.active { color: var(--primary); }
-        .bottom-nav-item:hover { color: var(--primary); background: var(--primary-light); }
-
         @media (max-width: 768px) {
-            .mobile-bottom-nav { display: flex; }
-            /* Hide desktop text links on mobile */
-            .nav-links { display: none !important; } 
-            /* Hide desktop buttons on mobile to save space, use bottom nav */
-            .nav-toggle { display: none; } /* Hide hamburger as we have bottom bar */
-            body { padding-bottom: 80px; } /* Extra space for bottom bar */
-            .navbar { height: 70px; } /* Slightly shorter on mobile */
+            .mobile-bottom-nav {
+                display: flex; position: fixed; bottom: 0; left: 0; width: 100%; height: 65px;
+                background: white; border-top: 1px solid var(--border); z-index: 1001;
+                justify-content: space-around; align-items: center; padding: 0 5px;
+            }
+            .bottom-nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 20%; height: 100%; color: var(--text-grey); cursor: pointer; }
+            .bottom-nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
+            .bottom-nav-item span { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; }
+            .bottom-nav-item.active { color: var(--primary); }
+            .nav-links { display: none !important; }
         }
 
-        /* --- MAIN SECTIONS --- */
-        .main-section { padding: 120px 0 60px; min-height: 100vh; display: none; }
-        .main-section.active { display: block; }
+        /* --- SECTION LOGIC (Instant Switch) --- */
+        .page-section {
+            position: fixed;
+            top: 80px; left: 0; width: 100%; height: calc(100% - 80px);
+            background: var(--bg-light);
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease;
+            z-index: 1;
+        }
+        .page-section.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
         
-        .section-header { text-align: center; margin-bottom: 60px; }
-        .section-header h2 { font-size: 2.5rem; margin-bottom: 15px; color: var(--text-dark); }
-        .section-header p { color: var(--text-grey); max-width: 600px; margin: 0 auto; }
-
-        /* --- HERO / HOME --- */
-        #home-section { background: linear-gradient(135deg, #fff 0%, var(--primary-light) 100%); display: flex; align-items: center; }
-        #home-section.active { display: flex; }
-        .hero-content h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 25px; font-weight: 800; }
-        .hero-content h1 span { color: var(--primary); }
-        .hero-content p { font-size: 1.2rem; color: var(--text-grey); margin-bottom: 40px; max-width: 600px; }
-        .hero-stats { display: flex; gap: 40px; margin-top: 50px; }
-        .stat-item h3 { font-size: 2rem; color: var(--primary); }
-        .stat-item p { color: var(--text-dark); font-weight: 500; }
-
-        /* --- ABOUT --- */
-        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-        @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; } }
-        .about-image { background: var(--primary-light); height: 400px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--primary); }
-
-        /* --- SERVICE CARDS --- */
-        .service-card {
-            background: white; border-radius: var(--radius); padding: 30px;
-            border: 1px solid var(--border); transition: var(--transition); position: relative; overflow: hidden;
-            cursor: pointer;
+        /* Adjust for Mobile Bottom Nav */
+        @media (max-width: 768px) {
+            .page-section { top: 70px; height: calc(100% - 135px); }
+            .navbar { height: 70px; }
         }
-        .service-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
-        .service-card h3 { font-size: 1.3rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .service-card h3 i { color: var(--primary); font-size: 1.5rem; width: 40px; height: 40px; background: var(--primary-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .service-card p { font-size: 0.95rem; color: var(--text-grey); margin-bottom: 15px; }
-        .service-card .read-more { color: var(--primary); font-weight: 600; font-size: 0.9rem; }
 
-        /* --- TEAM --- */
-        .team-card { background: white; border-radius: var(--radius); overflow: hidden; text-align: center; box-shadow: var(--shadow); }
-        .team-avatar { width: 100%; height: 200px; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 4rem; color: var(--text-grey); }
-        .team-info { padding: 20px; }
+        /* --- HOME SECTION (Centered) --- */
+        #home-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #fff 0%, var(--primary-light) 100%);
+        }
+        #home-section.active { display: flex; }
+        
+        .hero-content {
+            max-width: 800px;
+            text-align: center;
+            padding: 40px;
+        }
+        .hero-content h1 { font-size: 4rem; line-height: 1.1; margin-bottom: 25px; font-weight: 800; }
+        .hero-content h1 span { color: var(--primary); }
+        .hero-content p { font-size: 1.3rem; color: var(--text-grey); margin-bottom: 40px; }
+        
+        /* --- GENERAL CONTENT SECTIONS --- */
+        .section-padding { padding: 60px 20px; }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-header h2 { font-size: 2.5rem; margin-bottom: 15px; color: var(--text-dark); }
+
+        .card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); padding: 25px; transition: 0.2s; }
+        .card:hover { border-color: var(--primary); }
 
         /* --- BOOKING WIZARD --- */
-        .wizard-container { background: white; border-radius: 12px; box-shadow: var(--shadow-lg); overflow: hidden; max-width: 1000px; margin: 0 auto; }
+        .wizard-container { background: white; border-radius: 12px; box-shadow: var(--shadow-lg); overflow: hidden; max-width: 1000px; margin: 0 auto; height: auto; }
         .wizard-header { background: var(--primary); padding: 20px; color: white; }
         .wizard-steps { display: flex; gap: 20px; justify-content: center; }
         .wizard-step { display: flex; align-items: center; gap: 10px; opacity: 0.6; }
         .wizard-step.active { opacity: 1; font-weight: bold; }
         .step-number { width: 30px; height: 30px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .wizard-body { padding: 40px; }
-        .wizard-step-content { display: none; animation: fadeIn 0.5s; }
+        .wizard-step-content { display: none; animation: fadeIn 0.3s; }
         .wizard-step-content.active { display: block; }
         
-        .dropdown-menu { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid var(--border); border-radius: var(--radius); max-height: 300px; overflow-y: auto; z-index: 100; box-shadow: var(--shadow-lg); display: none; }
+        .dropdown-menu { position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid var(--border); border-radius: var(--radius); max-height: 250px; overflow-y: auto; z-index: 100; box-shadow: var(--shadow-lg); display: none; }
         .dropdown-menu.show { display: block; }
-        .dropdown-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid var(--bg-light); display: flex; justify-content: space-between; }
+        .dropdown-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid var(--bg-light); display: flex; justify-content: space-between; font-size: 0.95rem; }
         .dropdown-item:hover { background: var(--primary-light); }
         
-        .selected-item { background: var(--bg-light); padding: 10px 15px; border-radius: var(--radius); margin-bottom: 8px; display: flex; justify-content: space-between; flex-wrap: wrap; }
-
-        /* --- EVENTS --- */
-        .event-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); }
-        .event-card:hover { transform: translateY(-5px); }
-        .event-img { height: 180px; background: var(--primary-light); width: 100%; object-fit: cover; display: flex; align-items: center; justify-content: center;}
-        .event-body { padding: 20px; }
-        .event-date { color: var(--primary); font-weight: 700; font-size: 0.9rem; margin-bottom: 5px; }
+        .selected-item { background: var(--bg-light); padding: 10px 15px; border-radius: var(--radius); margin-bottom: 8px; display: flex; justify-content: space-between; flex-wrap: wrap; font-size: 0.9rem; }
 
         /* --- ADMIN DASHBOARD --- */
-        #admin-section { display: none; height: 100vh; width: 100%; }
+        #admin-section { display: none; height: 100vh; width: 100%; position: fixed; top:0; left:0; z-index: 2000; background: var(--bg-light); }
         #admin-section.active { display: flex; }
         
-        .admin-sidebar { width: 260px; background: #111827; color: white; height: 100vh; position: fixed; left: 0; top: 0; display: flex; flex-direction: column; z-index: 1100; transition: transform 0.3s; }
+        .admin-sidebar { width: var(--sidebar-width); background: var(--bg-dark); color: white; height: 100vh; position: fixed; left: 0; top: 0; display: flex; flex-direction: column; z-index: 1100; transition: transform 0.3s; }
         .admin-sidebar-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 15px; }
         .admin-menu { flex: 1; padding: 20px 0; overflow-y: auto; }
-        .admin-menu-item { padding: 15px 25px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: #9ca3af; transition: 0.2s; border-left: 4px solid transparent; }
+        .admin-menu-item { display: flex; align-items: center; gap: 15px; padding: 15px 25px; color: #9ca3af; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; font-weight: 500; }
         .admin-menu-item:hover { background: rgba(255,255,255,0.05); color: white; }
         .admin-menu-item.active { background: rgba(255,255,255,0.1); color: white; border-left-color: var(--primary); }
-        .admin-menu-item i { width: 20px; text-align: center; }
 
-        /* Admin Mobile */
+        .admin-main { margin-left: var(--sidebar-width); flex: 1; padding: 30px; background: var(--bg-light); overflow-y: auto; height: 100vh; }
+        
+        /* Responsive Admin */
+        .admin-mobile-header { display: none; }
         @media (max-width: 768px) {
-            .admin-sidebar { transform: translateX(-100%); position: fixed; z-index: 2000; }
+            .admin-sidebar { transform: translateX(-100%); }
             .admin-sidebar.mobile-active { transform: translateX(0); }
             .admin-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1999; display: none; }
             .admin-overlay.active { display: block; }
-            .admin-main { margin-left: 0; padding-top: 80px; }
             .admin-mobile-header { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 70px; background: white; z-index: 1000; box-shadow: var(--shadow); justify-content: space-between; align-items: center; padding: 0 20px; }
+            .admin-main { margin-left: 0; padding-top: 80px; }
+            .mobile-bottom-nav { display: none !important; } /* Hide public nav inside admin */
         }
 
-        .admin-main { margin-left: 260px; flex: 1; padding: 30px; background: var(--bg-light); overflow-y: auto; }
-        
-        .admin-card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); padding: 25px; margin-bottom: 30px; }
-        .table-wrapper { width: 100%; overflow-x: auto; }
         .data-table { width: 100%; border-collapse: collapse; min-width: 600px; }
         .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); }
         .data-table th { font-size: 0.85rem; text-transform: uppercase; color: var(--text-grey); background: var(--bg-light); }
@@ -235,129 +201,75 @@
 
         /* --- MODALS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 3000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal { background: white; width: 100%; max-width: 700px; border-radius: 8px; overflow: hidden; animation: slideIn 0.3s; max-height: 90vh; display: flex; flex-direction: column; }
-        .modal-header { padding: 15px 20px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-        .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
-        .modal-footer { padding: 15px 20px; background: var(--bg-light); display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0; }
+        .modal { background: white; width: 100%; max-width: 600px; border-radius: 8px; overflow: hidden; animation: slideIn 0.3s; }
+        .modal-header { padding: 15px 20px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 20px; overflow-y: auto; max-height: 70vh; }
+        .modal-footer { padding: 15px 20px; background: var(--bg-light); display: flex; justify-content: flex-end; gap: 10px; }
         .close-btn { cursor: pointer; font-size: 1.5rem; line-height: 1; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+        .input-control { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 1rem; }
 
         @keyframes slideIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        @media print { body * { visibility: hidden; } #invoice-print, #invoice-print * { visibility: visible; } #invoice-print { position: absolute; left: 0; top: 0; width: 100%; } }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR (Desktop) -->
+    <!-- PUBLIC NAVBAR -->
     <nav class="navbar" id="navbar">
         <div class="container flex items-center justify-between" style="width: 100%;">
             <div class="nav-logo-link" onclick="app.showSection('home')">
                 <img src="logo.png" alt="Philsound" class="nav-logo-img" onerror="this.style.display='none'; document.getElementById('logo-text-fallback').style.display='block';">
                 <span id="logo-text-fallback" class="nav-logo-text" style="display:none;">PHILSOUND</span>
             </div>
-            
-            <!-- Desktop Links -->
             <div class="nav-links" id="navLinks">
                 <a class="nav-link" onclick="app.showSection('home')"><i class="fas fa-home"></i> Home</a>
                 <a class="nav-link" onclick="app.showSection('services')"><i class="fas fa-cogs"></i> Services</a>
-                <a class="nav-link" onclick="app.showSection('events')"><i class="fas fa-calendar-alt"></i> Events</a>
-                <a class="nav-link" onclick="app.showSection('about')"><i class="fas fa-info-circle"></i> About</a>
-                <a class="btn btn-primary btn-sm" onclick="app.openQuickBookModal()"><i class="fas fa-plus"></i> Book</a>
-                <a class="btn btn-outline btn-sm" onclick="app.showLoginModal()"><i class="fas fa-user-shield"></i> Admin</a>
+                <a class="nav-link" onclick="app.showSection('booking')"><i class="fas fa-calendar-check"></i> Book Now</a>
+                <a class="btn btn-primary btn-sm" onclick="app.showLoginModal()"><i class="fas fa-user-shield"></i> Admin</a>
             </div>
         </div>
     </nav>
 
-    <!-- MOBILE BOTTOM NAVIGATION (Icons for Small Screens) -->
-    <div class="mobile-bottom-nav">
-        <div class="bottom-nav-item active" onclick="app.showSection('home')">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </div>
-        <div class="bottom-nav-item" onclick="app.showSection('services')">
-            <i class="fas fa-th-large"></i>
-            <span>Services</span>
-        </div>
-        <div class="bottom-nav-item" onclick="app.showSection('events')">
-            <i class="fas fa-calendar-check"></i>
-            <span>Events</span>
-        </div>
-        <div class="bottom-nav-item" onclick="app.openQuickBookModal()">
-            <i class="fas fa-plus-circle" style="color: var(--primary);"></i>
-            <span>Book</span>
-        </div>
-        <div class="bottom-nav-item" onclick="app.showLoginModal()">
-            <i class="fas fa-user-cog"></i>
-            <span>Admin</span>
+    <!-- MOBILE BOTTOM NAV -->
+    <div class="mobile-bottom-nav" id="publicBottomNav">
+        <div class="bottom-nav-item active" onclick="app.showSection('home')"><i class="fas fa-home"></i><span>Home</span></div>
+        <div class="bottom-nav-item" onclick="app.showSection('services')"><i class="fas fa-th-large"></i><span>Services</span></div>
+        <div class="bottom-nav-item" onclick="app.showSection('booking')"><i class="fas fa-plus-circle" style="color:var(--success);"></i><span>Book</span></div>
+        <div class="bottom-nav-item" onclick="app.showLoginModal()"><i class="fas fa-user-cog"></i><span>Admin</span></div>
+    </div>
+
+    <!-- PAGE: HOME (Centered) -->
+    <div id="home-section" class="page-section active">
+        <div class="hero-content">
+            <h1>Professional <span>Event Solutions</span></h1>
+            <p>Sound, Visuals, Logistics, Catering, and Decoration. A full-service production house delivering standard yet custom solutions.</p>
+            <div class="flex justify-center" style="gap: 15px; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="app.showSection('booking')">Build Your Package</button>
+                <button class="btn btn-outline" onclick="app.showSection('services')">Explore Services</button>
+            </div>
+            <div class="grid grid-3" style="margin-top: 60px; text-align: center;">
+                <div><h3 style="font-size: 2rem; color: var(--primary);">500+</h3><p>Events Done</p></div>
+                <div><h3 style="font-size: 2rem; color: var(--primary);">100%</h3><p>Client Satisfaction</p></div>
+                <div><h3 style="font-size: 2rem; color: var(--primary);">24/7</h3><p>Support</p></div>
+            </div>
         </div>
     </div>
 
-    <!-- MAIN SECTION: HOME -->
-    <section id="home-section" class="main-section active">
-        <div class="container">
-            <div class="hero-content" style="max-width: 700px;">
-                <h1>Professional <span>Event Solutions</span> Engineered.</h1>
-                <p>Sound, Visuals, Logistics, Catering, and Decoration. A full-service production house delivering standard yet custom solutions for events of any scale.</p>
-                <div class="flex" style="gap: 15px; flex-wrap: wrap;">
-                    <button class="btn btn-primary" onclick="app.openQuickBookModal()"><i class="fas fa-calendar-check"></i> Book Now</button>
-                    <button class="btn btn-outline" onclick="app.showSection('services')"><i class="fas fa-th-large"></i> View Services</button>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat-item"><h3>500+</h3><p>Events Done</p></div>
-                    <div class="stat-item"><h3>100+</h3><p>Clients</p></div>
-                    <div class="stat-item"><h3>50+</h3><p>Team Members</p></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- MAIN SECTION: ABOUT US -->
-    <section id="about-section" class="main-section">
-        <div class="container">
-            <div class="section-header">
-                <h2>About Philsound</h2>
-                <p>Who we are and what drives us.</p>
-            </div>
-            <div class="about-grid">
-                <div>
-                    <h3 style="font-size: 1.8rem; margin-bottom: 20px; color: var(--primary-dark);">Our Story</h3>
-                    <p style="margin-bottom: 15px;">Founded by Philpeace, Philsound started as a small sound engineering outfit and has grown into a comprehensive event production powerhouse. We believe in "Sound with Peace of Mind".</p>
-                    <p style="margin-bottom: 15px;">From stadium crusades to intimate corporate workshops, our team brings the same level of dedication, precision, and creativity.</p>
-                </div>
-                <div class="about-image">
-                    <i class="fas fa-users-gear"></i>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- MAIN SECTION: SERVICES -->
-    <section id="services-section" class="main-section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Our Services</h2>
-                <p>Select a category to view detailed information.</p>
-            </div>
+    <!-- PAGE: SERVICES -->
+    <div id="services-section" class="page-section">
+        <div class="section-padding container">
+            <div class="section-header"><h2>Our Expertise</h2><p>Select a service to see details</p></div>
             <div class="grid grid-3" id="servicesGrid"></div>
         </div>
-    </section>
+    </div>
 
-    <!-- MAIN SECTION: EVENTS -->
-    <section id="events-section" class="main-section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Upcoming Public Events</h2>
-                <p>Browse events managed by Philsound. Book your tickets today.</p>
-            </div>
-            <div class="grid grid-3" id="eventsGrid"></div>
-        </div>
-    </section>
-
-    <!-- MAIN SECTION: BOOKING WIZARD -->
-    <section id="booking-section" class="main-section">
-        <div class="container">
-            <div class="wizard-container">
+    <!-- PAGE: BOOKING WIZARD -->
+    <div id="booking-section" class="page-section">
+        <div class="section-padding container flex justify-center">
+            <div class="wizard-container" style="width: 100%; max-width: 900px;">
                 <div class="wizard-header">
                     <div class="wizard-steps">
                         <div class="wizard-step active" data-step="1"><div class="step-number">1</div><span>Info</span></div>
@@ -368,49 +280,45 @@
                 <div class="wizard-body">
                     <!-- Step 1 -->
                     <div class="wizard-step-content active" id="step-1">
-                        <h3 style="margin-bottom: 20px;">Event Details</h3>
+                        <h3 style="margin-bottom: 20px; text-align:center;">Event Details</h3>
                         <div class="grid grid-2">
                             <div class="form-group"><label>Event Name</label><input type="text" class="input-control" id="eventName"></div>
                             <div class="form-group"><label>Event Date</label><input type="date" class="input-control" id="eventDate"></div>
                         </div>
-                        <div class="grid grid-2">
-                            <div class="form-group"><label>Venue</label><input type="text" class="input-control" id="eventVenue"></div>
-                            <div class="form-group"><label>Attendance</label><input type="number" class="input-control" id="eventAttendance"></div>
-                        </div>
-                        <div class="form-group"><label>Client Name</label><input type="text" class="input-control" id="clientName"></div>
+                        <div class="form-group"><label>Client Name / Org</label><input type="text" class="input-control" id="clientName"></div>
                         <div class="grid grid-2">
                             <div class="form-group"><label>Email</label><input type="email" class="input-control" id="clientEmail"></div>
                             <div class="form-group"><label>Phone</label><input type="tel" class="input-control" id="clientPhone"></div>
                         </div>
                         <div class="flex justify-between" style="margin-top: 30px;">
                             <button class="btn btn-outline" onclick="app.showSection('home')">Cancel</button>
-                            <button class="btn btn-primary" onclick="app.nextStep(2)">Next: Equipment</button>
+                            <button class="btn btn-primary" onclick="app.nextStep(2)">Next: Select Equipment</button>
                         </div>
                     </div>
                     <!-- Step 2 -->
                     <div class="wizard-step-content" id="step-2">
-                        <h3 style="margin-bottom: 20px;">Select Equipment</h3>
+                        <h3 style="margin-bottom: 20px; text-align:center;">Build Your Package</h3>
                         <div class="grid grid-2" style="gap: 20px;">
                             <div class="form-group">
                                 <label>Category</label>
                                 <select class="input-control" id="categorySelect" onchange="app.updateItemsList()">
-                                    <option value="">Select...</option>
-                                    <option value="sound">Sound</option>
-                                    <option value="visuals">Visuals</option>
+                                    <option value="">Select Category...</option>
+                                    <option value="sound">Sound & Backline</option>
+                                    <option value="visuals">Visuals & Media</option>
                                     <option value="catering">Catering</option>
                                     <option value="decoration">Decoration</option>
                                     <option value="logistics">Logistics</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Item Search</label>
+                                <label>Select Item</label>
                                 <div style="position:relative;">
-                                    <input type="text" class="input-control" id="itemSearch" placeholder="Select category..." onclick="app.toggleDropdown()" oninput="app.filterDropdownItems()" autocomplete="off">
+                                    <input type="text" class="input-control" id="itemSearch" placeholder="Choose category first..." onclick="app.toggleDropdown()" oninput="app.filterDropdownItems()" autocomplete="off">
                                     <div class="dropdown-menu" id="itemDropdown"></div>
                                 </div>
                             </div>
                             <div class="form-group"><label>Qty</label><input type="number" class="input-control" id="itemQty" value="1"></div>
-                            <div class="form-group flex items-end"><button class="btn btn-accent btn-block" onclick="app.addItemToQuote()">Add</button></div>
+                            <div class="form-group flex items-end"><button class="btn btn-accent btn-block" onclick="app.addItemToQuote()">Add to List</button></div>
                         </div>
                         <hr style="margin: 30px 0; border-color: var(--border);">
                         <h4>Current Selection</h4>
@@ -422,224 +330,160 @@
                     </div>
                     <!-- Step 3 -->
                     <div class="wizard-step-content" id="step-3">
-                        <div id="invoice-print">
-                            <div class="invoice-box" style="background: white; border: 1px solid var(--border); padding: 40px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 40px; border-bottom: 2px solid var(--primary); padding-bottom: 20px;">
-                                    <div><img src="logo.png" style="height: 50px; margin-bottom: 10px;" onerror="this.outerHTML='<h1 style=\'color:var(--primary);\'>PHILSOUND</h1>'"></div>
-                                    <div style="text-align: right;"><h3>QUOTE</h3><p id="invoiceNumber"></p><p id="invoiceDate"></p></div>
-                                </div>
-                                <div style="margin-bottom: 30px;"><h4>Client Details:</h4><p id="invoiceClientName"></p><p id="invoiceEventDetails"></p></div>
-                                <div class="table-wrapper">
-                                    <table class="data-table" style="min-width: 100%; border: 1px solid var(--border);">
-                                        <thead><tr style="background: var(--bg-light);"><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
-                                        <tbody id="invoiceItemsTable"></tbody>
-                                    </table>
-                                </div>
-                                <div style="text-align: right; font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-top: 20px;">Total: <span id="invoiceTotal">$0</span></div>
+                        <div id="invoice-print" style="background: white; padding: 40px; border: 1px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 40px; border-bottom: 2px solid var(--primary); padding-bottom: 20px;">
+                                <div><h1 style="color:var(--primary);">PHILSOUND</h1><p>Professional Audiovisual</p></div>
+                                <div style="text-align: right;"><h3>QUOTE</h3><p id="invoiceNumber"></p><p id="invoiceDate"></p></div>
                             </div>
+                            <div style="margin-bottom: 30px;"><h4>Client:</h4><p id="invoiceClientName"></p><p id="invoiceEventDetails"></p></div>
+                            <div style="overflow-x:auto;">
+                                <table class="data-table" style="min-width: 100%; border: 1px solid var(--border);">
+                                    <thead><tr style="background: var(--bg-light);"><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+                                    <tbody id="invoiceItemsTable"></tbody>
+                                </table>
+                            </div>
+                            <div style="text-align: right; font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-top: 20px;">Total: <span id="invoiceTotal">$0</span></div>
                         </div>
                         <div class="flex justify-between" style="margin-top: 30px;">
                             <button class="btn btn-outline" onclick="app.nextStep(2)">Back</button>
-                            <div style="display: flex; gap: 10px;">
-                                <button class="btn btn-outline" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
-                                <button class="btn btn-primary" onclick="app.submitQuote()">Submit</button>
-                            </div>
+                            <button class="btn btn-primary" onclick="app.submitQuote()">Submit for Approval</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- ADMIN DASHBOARD -->
     <section id="admin-section">
         <div class="admin-overlay" id="adminOverlay" onclick="app.toggleAdminSidebar()"></div>
         
-        <!-- Mobile Header for Admin -->
-        <div class="admin-mobile-header" style="display: none;">
+        <div class="admin-mobile-header">
             <button class="btn btn-sm btn-outline" onclick="app.toggleAdminSidebar()"><i class="fas fa-bars"></i></button>
-            <img src="logo.png" style="height: 35px;" onerror="this.outerHTML='<span style=\'font-weight:bold; color:var(--primary);\'>ADMIN</span>'">
+            <span style="font-weight:bold; color:var(--primary);">ADMIN</span>
             <button class="btn btn-sm btn-outline" onclick="app.logout()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
 
-        <!-- Sidebar -->
         <div class="admin-sidebar" id="adminSidebar">
-            <div class="admin-sidebar-header">
-                <img src="logo.png" style="filter: brightness(0) invert(1); height: 35px;" onerror="this.outerHTML='<span style=\'font-weight:bold; font-size:1.2rem;\'>PHILSOUND</span>'"> 
-                <h3>Admin</h3>
-            </div>
+            <div class="admin-sidebar-header"><i class="fas fa-broadcast-tower" style="font-size: 1.5rem; color: var(--primary);"></i><h3>Philsound</h3></div>
             <div class="admin-menu">
                 <div class="admin-menu-item active" onclick="app.showAdminTab('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</div>
                 <div class="admin-menu-item" onclick="app.showAdminTab('quotes')"><i class="fas fa-file-invoice-dollar"></i> Quotes</div>
                 <div class="admin-menu-item" onclick="app.showAdminTab('events')"><i class="fas fa-calendar-alt"></i> Events</div>
                 <div class="admin-menu-item" onclick="app.showAdminTab('inventory')"><i class="fas fa-boxes"></i> Inventory</div>
-                <div class="admin-menu-item" onclick="app.showAdminTab('cms')"><i class="fas fa-paint-brush"></i> Settings</div>
             </div>
         </div>
 
-        <!-- Main Admin Content -->
         <div class="admin-main">
-            <!-- Dashboard Tab -->
+            <!-- Dashboard -->
             <div class="admin-tab active" id="tab-dashboard">
-                <h2 style="margin-bottom: 30px;">Dashboard Overview</h2>
+                <h2 style="margin-bottom: 30px;">Dashboard</h2>
                 <div class="grid grid-4">
-                    <div class="admin-card" style="border-left: 5px solid var(--primary);"><h3 id="stat-quotes">0</h3><p>New Quotes</p></div>
-                    <div class="admin-card" style="border-left: 5px solid var(--success);"><h3 id="stat-events">0</h3><p>Active Events</p></div>
-                    <div class="admin-card" style="border-left: 5px solid var(--accent);"><h3 id="stat-items">0</h3><p>Inventory Items</p></div>
-                    <div class="admin-card" style="border-left: 5px solid var(--text-grey);"><h3 id="stat-revenue">$0</h3><p>Revenue</p></div>
+                    <div class="card" style="border-left: 5px solid var(--primary);"><h3 id="stat-quotes">0</h3><p>New Quotes</p></div>
+                    <div class="card" style="border-left: 5px solid var(--success);"><h3 id="stat-events">0</h3><p>Events</p></div>
+                    <div class="card" style="border-left: 5px solid var(--accent);"><h3 id="stat-items">0</h3><p>Inventory</p></div>
+                    <div class="card" style="border-left: 5px solid var(--text-grey);"><h3 id="stat-revenue">$0</h3><p>Revenue</p></div>
                 </div>
             </div>
 
-            <!-- Quotes Tab -->
+            <!-- Quotes -->
             <div class="admin-tab" id="tab-quotes" style="display:none;">
-                <h2 style="margin-bottom: 30px;">Client Bookings</h2>
-                <div class="admin-card">
-                    <div class="table-wrapper">
-                        <table class="data-table">
-                            <thead><tr><th>ID</th><th>Client</th><th>Event</th><th>Total</th><th>Status</th><th>Action</th></tr></thead>
-                            <tbody id="adminQuotesList"></tbody>
-                        </table>
-                    </div>
+                <h2 style="margin-bottom: 30px;">Bookings</h2>
+                <div class="card" style="overflow-x:auto;">
+                    <table class="data-table">
+                        <thead><tr><th>ID</th><th>Client</th><th>Event</th><th>Total</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody id="adminQuotesList"></tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Events Management Tab -->
+            <!-- Events -->
             <div class="admin-tab" id="tab-events" style="display:none;">
                 <div class="flex justify-between items-center" style="margin-bottom: 30px;">
                     <h2>Event Management</h2>
-                    <button class="btn btn-primary" onclick="app.showModal('addEventModal')"><i class="fas fa-plus"></i> Create Event</button>
+                    <button class="btn btn-primary" onclick="app.showModal('addEventModal')"><i class="fas fa-plus"></i> Create</button>
                 </div>
                 <div class="grid grid-3" id="adminEventsGrid"></div>
             </div>
 
-            <!-- Inventory Tab -->
+            <!-- Inventory -->
             <div class="admin-tab" id="tab-inventory" style="display:none;">
                 <div class="flex justify-between items-center" style="margin-bottom: 30px;">
                     <h2>Inventory Database</h2>
-                    <button class="btn btn-primary" onclick="app.showModal('addInventoryModal')"><i class="fas fa-plus"></i> Add Item</button>
+                    <button class="btn btn-primary" onclick="app.showModal('addInventoryModal')"><i class="fas fa-plus"></i> Add</button>
                 </div>
-                <div class="admin-card">
-                    <div class="table-wrapper">
-                        <table class="data-table">
-                            <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Status</th></tr></thead>
-                            <tbody id="adminInventoryList"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CMS Tab -->
-            <div class="admin-tab" id="tab-cms" style="display:none;">
-                <h2 style="margin-bottom: 30px;">Website Settings</h2>
-                <div class="admin-card">
-                    <div class="form-group">
-                        <label>Homepage Title</label>
-                        <input type="text" class="input-control" id="cmsTitle" value="Professional Event Solutions Engineered.">
-                    </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <textarea class="input-control" rows="3" id="cmsDesc">Full-service production house.</textarea>
-                    </div>
-                    <button class="btn btn-primary" onclick="app.updateCMS()">Save Changes</button>
+                <div class="card" style="overflow-x:auto;">
+                    <table class="data-table">
+                        <thead><tr><th>Name</th><th>Category</th><th>Price</th></tr></thead>
+                        <tbody id="adminInventoryList"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- MODALS -->
-    
-    <!-- Login Modal -->
     <div class="modal-overlay" id="loginModal">
         <div class="modal">
-            <div class="modal-header"><h3><i class="fas fa-lock"></i> Admin Login</h3><span class="close-btn" onclick="app.hideModal('loginModal')">&times;</span></div>
+            <div class="modal-header"><h3>Login</h3><span class="close-btn" onclick="app.hideModal('loginModal')">&times;</span></div>
             <div class="modal-body">
-                <div class="form-group"><label>Username</label><input type="text" class="input-control" id="loginUser" value="admin"></div>
-                <div class="form-group"><label>Password</label><input type="password" class="input-control" id="loginPass" value="admin123"></div>
+                <div class="form-group"><label>User</label><input type="text" class="input-control" id="loginUser" value="admin"></div>
+                <div class="form-group"><label>Pass</label><input type="password" class="input-control" id="loginPass" value="admin123"></div>
             </div>
             <div class="modal-footer"><button class="btn btn-primary btn-block" onclick="app.login()">Login</button></div>
         </div>
     </div>
 
-    <!-- Quick Book Modal -->
-    <div class="modal-overlay" id="quickBookModal">
-        <div class="modal">
-            <div class="modal-header"><h3><i class="fas fa-bolt"></i> Quick Enquiry</h3><span class="close-btn" onclick="app.hideModal('quickBookModal')">&times;</span></div>
-            <div class="modal-body">
-                <p style="margin-bottom: 15px;">Fill in your details for a quick callback.</p>
-                <div class="form-group"><label>Your Name</label><input type="text" class="input-control"></div>
-                <div class="form-group"><label>Phone Number</label><input type="tel" class="input-control"></div>
-                <div class="form-group"><label>Service</label>
-                    <select class="input-control">
-                        <option>Full Event Production</option>
-                        <option>Sound & Audio</option>
-                        <option>Streaming & Video</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary btn-block" onclick="alert('Request Sent!'); app.hideModal('quickBookModal');">Send Request</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Service Detail Modal -->
     <div class="modal-overlay" id="serviceModal">
         <div class="modal">
             <div class="modal-header"><h3 id="serviceModalTitle"></h3><span class="close-btn" onclick="app.hideModal('serviceModal')">&times;</span></div>
             <div class="modal-body" id="serviceModalBody"></div>
-            <div class="modal-footer">
-                <button class="btn btn-accent" onclick="app.hideModal('serviceModal'); app.showSection('booking');">Book This Service</button>
-            </div>
+            <div class="modal-footer"><button class="btn btn-accent" onclick="app.hideModal('serviceModal'); app.showSection('booking');">Book Now</button></div>
         </div>
     </div>
 
-    <!-- Approve Modal -->
     <div class="modal-overlay" id="approveModal">
         <div class="modal">
-            <div class="modal-header" style="background: var(--success);"><h3>Approve Booking</h3><span class="close-btn" onclick="app.hideModal('approveModal')">&times;</span></div>
+            <div class="modal-header" style="background:var(--success);"><h3>Approve</h3><span class="close-btn" onclick="app.hideModal('approveModal')">&times;</span></div>
             <div class="modal-body">
-                <p>You are about to approve this quote.</p>
-                <div class="form-group" style="margin-top: 15px;">
-                    <label><input type="checkbox" id="checkPublic"> Publish as Public Ticketed Event?</label>
-                </div>
-                <div id="publicEventFields" style="display:none; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px;">
-                    <div class="form-group"><label>Ticket Price ($)</label><input type="number" class="input-control" id="publishPrice"></div>
+                <label><input type="checkbox" id="checkPublic"> Publish as Public Event?</label>
+                <div id="publicEventFields" style="display:none; margin-top:15px;">
+                    <div class="form-group"><label>Ticket Price</label><input type="number" class="input-control" id="publishPrice"></div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-accent" onclick="app.confirmApproval()">Confirm Approval</button>
-            </div>
+            <div class="modal-footer"><button class="btn btn-accent" onclick="app.confirmApproval()">Confirm</button></div>
         </div>
     </div>
 
-    <!-- Add Inventory Modal -->
-    <div class="modal-overlay" id="addInventoryModal">
-        <div class="modal">
-            <div class="modal-header"><h3>Add Inventory</h3><span class="close-btn" onclick="app.hideModal('addInventoryModal')">&times;</span></div>
-            <div class="modal-body">
-                <div class="form-group"><label>Name</label><input type="text" class="input-control" id="newItemName"></div>
-                <div class="form-group"><label>Category</label>
-                    <select class="input-control" id="newItemCat">
-                        <option value="sound">Sound</option><option value="visuals">Visuals</option>
-                        <option value="catering">Catering</option><option value="decoration">Decoration</option><option value="logistics">Logistics</option>
-                    </select>
-                </div>
-                <div class="form-group"><label>Price ($)</label><input type="number" class="input-control" id="newItemPrice"></div>
-            </div>
-            <div class="modal-footer"><button class="btn btn-accent" onclick="app.addInventoryItem()">Add</button></div>
-        </div>
-    </div>
-
-    <!-- Add Event Modal -->
     <div class="modal-overlay" id="addEventModal">
         <div class="modal">
             <div class="modal-header"><h3>Create Event</h3><span class="close-btn" onclick="app.hideModal('addEventModal')">&times;</span></div>
             <div class="modal-body">
-                <div class="form-group"><label>Event Name</label><input type="text" class="input-control" id="newEventName"></div>
+                <div class="form-group"><label>Name</label><input type="text" class="input-control" id="newEventName"></div>
                 <div class="form-group"><label>Date</label><input type="date" class="input-control" id="newEventDate"></div>
-                <div class="form-group"><label>Ticket Price ($)</label><input type="number" class="input-control" id="newEventPrice"></div>
+                <div class="form-group"><label>Price</label><input type="number" class="input-control" id="newEventPrice"></div>
             </div>
             <div class="modal-footer"><button class="btn btn-accent" onclick="app.addEvent()">Create</button></div>
+        </div>
+    </div>
+    
+    <div class="modal-overlay" id="addInventoryModal">
+        <div class="modal">
+            <div class="modal-header"><h3>Add Item</h3><span class="close-btn" onclick="app.hideModal('addInventoryModal')">&times;</span></div>
+            <div class="modal-body">
+                <div class="form-group"><label>Name</label><input type="text" class="input-control" id="newItemName"></div>
+                <div class="form-group"><label>Category</label>
+                    <select class="input-control" id="newItemCat">
+                        <option value="sound">Sound</option>
+                        <option value="visuals">Visuals</option>
+                        <option value="catering">Catering</option>
+                        <option value="decoration">Decoration</option>
+                        <option value="logistics">Logistics</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Price</label><input type="number" class="input-control" id="newItemPrice"></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-accent" onclick="app.addInventoryItem()">Add</button></div>
         </div>
     </div>
 
@@ -647,71 +491,59 @@
         /* --- DATA ENGINE --- */
         const DB = { get: (k) => JSON.parse(localStorage.getItem(k)) || [], set: (k, v) => localStorage.setItem(k, JSON.stringify(v)) };
 
-        /* --- INVENTORY (Detailed) --- */
+        /* --- DETAILED INVENTORY (User Provided) --- */
         const MASTER_INVENTORY = {
             sound: [
-                { name: "Shure SM58", price: 25 }, { name: "Sennheiser e935", price: 30 }, { name: "Behringer X32", price: 250 },
-                { name: "Midas M32", price: 400 }, { name: "QSC K12.2 Speaker", price: 100 }, { name: "RCF Line Array", price: 150 },
-                { name: "Shure PSM300 IEM", price: 80 }, { name: "DBX Driverack", price: 50 }, { name: "XLR Cable 50ft", price: 8 },
-                { name: "Mic Stand Boom", price: 10 }, { name: "Stage Box 32ch", price: 200 }, { name: "DI Box", price: 15 }
+                // 1. Core Instruments (Backline)
+                { name: "Acoustic Drum Kit (Full)", price: 150 }, { name: "Roland V-Drums (Electronic)", price: 200 }, { name: "Drum Accessories (Sticks/Throne)", price: 20 },
+                { name: "Drum Shield / Baffle", price: 50 }, { name: "Bass Guitar 5-String", price: 40 }, { name: "Bass Amplifier (Ampeg)", price: 80 },
+                { name: "Electric Guitar (Strat/Tele)", price: 50 }, { name: "Guitar Modeling Pedalboard (Helix)", price: 60 }, { name: "Acoustic Guitar with Pickup", price: 40 },
+                { name: "Keyboard 88-Key (Nord/Yamaha)", price: 100 }, { name: "Cajon / Percussion", price: 25 },
+                
+                // 2. Audio & Sound System (PA)
+                { name: "Digital Mixer (X32/M32)", price: 250 }, { name: "PA Speakers (Tops)", price: 100 }, { name: "Subwoofers", price: 150 },
+                { name: "Digital Stage Box (32ch)", price: 150 }, { name: "DI Box (Radial JDI)", price: 15 }, { name: "Shure SM58 (Vocal Mic)", price: 15 },
+                { name: "Shure SM57 (Instrument Mic)", price: 15 }, { name: "Drum Mic Kit (Kick/Snare/OH)", price: 80 }, { name: "Mic Stand (Boom)", price: 8 },
+                
+                // 3. Monitoring
+                { name: "In-Ear Monitor System (Shure PSM300)", price: 100 }, { name: "Personal Mixer (Behringer P16)", price: 40 },
+                
+                // 4. Cables & Electrical
+                { name: "XLR Cable (25ft)", price: 5 }, { name: "XLR Cable (50ft)", price: 8 }, { name: "Instrument Cable (1/4)", price: 5 },
+                { name: "Power Conditioner (Furman)", price: 30 }, { name: "Extension Cord (Heavy Duty)", price: 15 },
+                
+                // 5. Tech Tools
+                { name: "Laptop for Backing Tracks", price: 50 }, { name: "iPad (Charts/Lyrics)", price: 20 }, { name: "LED Stage Wash Lights", price: 50 },
+                
+                // 6. Backups
+                { name: "Backup Strings & Picks Kit", price: 15 }, { name: "Gaff Tape Roll", price: 10 }
             ],
             visuals: [
-                { name: "Sony A7III Camera", price: 200 }, { name: "Canon C300", price: 500 }, { name: "Blackmagic URSA", price: 450 },
-                { name: "PTZOptics 30X", price: 150 }, { name: "ATEM Mini Extreme", price: 250 }, { name: "vMix License", price: 80 },
-                { name: "Teradek Bolt 4K", price: 200 }, { name: "Aputure 600d Light", price: 120 }, { name: "ARRI Skypanel", price: 180 },
-                { name: "Chauvet Rogue R3", price: 100 }, { name: "Epson L30000U Projector", price: 500 }, { name: "LED Wall P2.9", price: 100 }
+                { name: "Sony A7III Camera", price: 200 }, { name: "Canon C300 MkIII", price: 500 }, { name: "Blackmagic ATEM Mini", price: 150 },
+                { name: "PTZ Camera (30x Zoom)", price: 150 }, { name: "LED Wall Panel (P2.9)", price: 80 }, { name: "High-Lumen Projector", price: 300 },
+                { name: "Teradek Wireless Video", price: 150 }, { name: "Lighting Stand Kit", price: 50 }
             ],
             catering: [
-                { name: "Gourmet Buffet (pp)", price: 40 }, { name: "Corporate Lunch (pp)", price: 20 }, { name: "Executive Bento", price: 18 },
-                { name: "BBQ Grill Station", price: 300 }, { name: "Coffee Station", price: 150 }, { name: "Espresso Bar (hr)", price: 100 },
-                { name: "Juice Station", price: 120 }, { name: "Wedding Cake", price: 500 }, { name: "Dessert Station", price: 200 },
-                { name: "Wait Staff (hr)", price: 25 }, { name: "Tent Marquee 10x10", price: 800 }, { name: "Round Table Rental", price: 15 }
+                { name: "Gourmet Buffet (per person)", price: 35 }, { name: "Executive Lunch Box", price: 18 }, { name: "Coffee Station", price: 120 },
+                { name: "Wedding Cake (3-Tier)", price: 450 }, { name: "Wait Staff (per person)", price: 25 }, { name: "Beverage Station", price: 100 }
             ],
             decoration: [
-                { name: "Flower Centerpiece", price: 60 }, { name: "Stage Backdrop", price: 1000 }, { name: "Silk Arrangement", price: 200 },
-                { name: "Red Carpet 30ft", price: 100 }, { name: "Fairy Lights (sqm)", price: 15 }, { name: "Edison Bulbs", price: 30 },
-                { name: "Balloon Arch", price: 250 }, { name: "Cold Spark Machine", price: 150 }, { name: "Deco Curtains", price: 150 },
-                { name: "Rustic Arch", price: 300 }, { name: "LED Dance Floor", price: 60 }, { name: "Neon Sign", price: 180 }
+                { name: "Floral Centerpiece", price: 50 }, { name: "Stage Backdrop (Custom)", price: 800 }, { name: "Red Carpet Runner", price: 80 },
+                { name: "Fairy Lights Canopy", price: 100 }, { name: "Cold Spark Machine", price: 120 }, { name: "Photo Booth Setup", price: 250 }
             ],
             logistics: [
-                { name: "Toyota Hiace Shuttle", price: 350 }, { name: "25-Seater Bus", price: 450 }, { name: "50-Seater Coach", price: 900 },
-                { name: "Double Cabin Pickup", price: 120 }, { name: "5-Ton Truck", price: 300 }, { name: "10-Ton Truck", price: 500 },
-                { name: "Prime Mover Lowbed", price: 1200 }, { name: "Luxury SUV", price: 150 }, { name: "Generator 50kVA", price: 400 },
-                { name: "VIP Toilet Unit", price: 150 }, { name: "Security Guard", price: 50 }, { name: "WiFi Hotspot", price: 40 }
+                { name: "Shuttle Bus (Toyota Hiace)", price: 300 }, { name: "Equipment Truck (5 Ton)", price: 250 }, { name: "Generator (50kVA)", price: 350 },
+                { name: "Security Guard", price: 40 }, { name: "VIP Toilet Unit", price: 120 }
             ]
         };
 
         const SERVICES_DATA = [
-            { 
-                title: "Sound Engineering", icon: "fa-volume-high", shortDesc: "Crystal clear audio for live concerts and conferences.",
-                details: "Our audio division provides Monitor Engineering, FOH mixing, Broadcast Sound Engineering, and Band IEM Mixing.",
-                items: ["Line Array Systems", "Digital Consoles", "Monitor Systems", "Broadcast Trucks"]
-            },
-            { 
-                title: "Visuals & Media", icon: "fa-video", shortDesc: "Live streaming, LED screens, and projection.",
-                details: "Multi-camera live streaming, massive LED screen setups, high-lumen projection, and full lighting design.",
-                items: ["4K Production", "Live Streaming", "LED Walls", "Lighting Design"]
-            },
-            { 
-                title: "Catering Services", icon: "fa-utensils", shortDesc: "Gourmet buffets and custom orders.",
-                details: "From outdoor crusade feeding to high-end corporate dinners. We manage the entire food chain.",
-                items: ["Corporate Buffets", "Packed Lunches", "Wedding Cakes", "Bar Service"]
-            },
-            { 
-                title: "Decoration", icon: "fa-palette", shortDesc: "Custom themes and florals.",
-                details: "Live and custom made flowers, deco curtains, red carpet setups, and full stage transformations.",
-                items: ["Floral Arrangements", "Stage Backdrops", "Theme Props", "VIP Areas"]
-            },
-            { 
-                title: "Logistics & Transport", icon: "fa-truck", shortDesc: "Fleet management for equipment and guests.",
-                details: "Big trucks for crusades, vans for crew, luxury buses for guests, and shuttles for tourists.",
-                items: ["Equipment Trucks", "Guest Shuttles", "Crew Vans", "Heavy Machinery"]
-            },
-            { 
-                title: "Videography & Drones", icon: "fa-film", shortDesc: "Cinematic capture and aerial footage.",
-                details: "High-end videography using cinema cameras and drone pilots for aerial shots.",
-                items: ["Cinematic Shoots", "Aerial Drone Filming", "Editing", "Social Media Clips"]
-            }
+            { title: "Sound & Backline", icon: "fa-music", shortDesc: "Instruments, PA, and Engineering.", details: "Complete backline rental including drums, guitars, keyboards. Full PA systems with digital mixing consoles (X32, M32) and professional monitoring solutions (IEMs)." },
+            { title: "Visuals & Media", icon: "fa-video", shortDesc: "Streaming, LED, and Production.", details: "Multi-camera live streaming setups, massive LED walls, projection, and professional lighting design." },
+            { title: "Catering", icon: "fa-utensils", shortDesc: "Gourmet food services.", details: "From packed lunches to gourmet buffets. Coffee stations, wedding cakes, and full beverage service." },
+            { title: "Decoration", icon: "fa-palette", shortDesc: "Themes and Florals.", details: "Custom stage backdrops, fresh floral arrangements, red carpets, and spark machines." },
+            { title: "Logistics", icon: "fa-truck", shortDesc: "Transport and Power.", details: "Shuttle buses for guests, equipment trucks, silent generators, and on-site security." },
+            { title: "Event Ticketing", icon: "fa-ticket-alt", shortDesc: "Sales and Management.", details: "Integrated ticketing system for your public events. Manage sales and entry." }
         ];
 
         /* --- APP LOGIC --- */
@@ -725,7 +557,6 @@
                 this.state.quotes = DB.get('ps_quotes') || [];
 
                 this.renderServices();
-                this.renderPublicEvents();
                 this.renderAdminInventory();
                 this.renderAdminEvents();
                 this.renderAdminQuotes();
@@ -741,50 +572,44 @@
             },
 
             showSection: function(id) {
-                document.querySelectorAll('.main-section').forEach(s => s.classList.remove('active'));
+                // Hide all pages
+                document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+                // Show target
                 const target = document.getElementById(id + '-section');
                 if(target) target.classList.add('active');
                 
-                // Update Active State for Bottom Nav
+                // Update Mobile Nav active state
                 document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
-                const bottomItems = document.querySelectorAll('.bottom-nav-item');
-                if(id === 'home') bottomItems[0].classList.add('active');
-                if(id === 'services') bottomItems[1].classList.add('active');
-                if(id === 'events') bottomItems[2].classList.add('active');
+                if(id === 'home') document.querySelector('.bottom-nav-item:nth-child(1)').classList.add('active');
+                if(id === 'services') document.querySelector('.bottom-nav-item:nth-child(2)').classList.add('active');
+                if(id === 'booking') document.querySelector('.bottom-nav-item:nth-child(3)').classList.add('active');
                 
-                window.scrollTo(0, 0);
+                // Scroll to top of section instantly
+                if(target) target.scrollTop = 0;
             },
 
-            toggleMobileMenu: function() { document.getElementById('navLinks').classList.toggle('active'); },
-
-            /* --- MODAL LOGIC --- */
+            /* --- MODALS --- */
             showLoginModal: function() { document.getElementById('loginModal').style.display = 'flex'; },
             hideModal: function(id) { document.getElementById(id).style.display = 'none'; },
             showModal: function(id) { document.getElementById(id).style.display = 'flex'; },
-            openQuickBookModal: function() { this.showModal('quickBookModal'); },
-
-            openServiceModal: function(index) {
-                const s = SERVICES_DATA[index];
-                document.getElementById('serviceModalTitle').innerText = s.title;
-                let html = `<p style="margin-bottom: 20px;">${s.details}</p>`;
-                html += `<h4 style="margin-bottom: 10px;">Key Offerings:</h4>`;
-                html += `<ul style="list-style:none;">`;
-                s.items.forEach(item => { html += `<li style="padding: 8px 0; border-bottom: 1px solid var(--border);"><i class="fas fa-check" style="color:var(--success); margin-right:10px;"></i> ${item}</li>`; });
-                html += `</ul>`;
-                document.getElementById('serviceModalBody').innerHTML = html;
-                this.showModal('serviceModal');
-            },
 
             /* --- SERVICES --- */
             renderServices: function() {
                 const grid = document.getElementById('servicesGrid');
                 grid.innerHTML = SERVICES_DATA.map((s, index) => `
-                    <div class="service-card" onclick="app.openServiceModal(${index})">
-                        <h3><i class="fas ${s.icon}"></i> ${s.title}</h3>
-                        <p>${s.shortDesc}</p>
-                        <div class="read-more">View Details <i class="fas fa-arrow-right" style="font-size:0.8rem; margin-left:5px;"></i></div>
+                    <div class="card" style="cursor:pointer;" onclick="app.openServiceModal(${index})">
+                        <h3 style="display:flex; align-items:center; gap:10px;"><i class="fas ${s.icon}" style="color:var(--primary); font-size:1.5rem;"></i> ${s.title}</h3>
+                        <p style="color:var(--text-grey); margin-top:10px;">${s.shortDesc}</p>
+                        <p style="margin-top:20px; color:var(--primary); font-weight:600; font-size:0.9rem;">View Details <i class="fas fa-arrow-right"></i></p>
                     </div>
                 `).join('');
+            },
+
+            openServiceModal: function(index) {
+                const s = SERVICES_DATA[index];
+                document.getElementById('serviceModalTitle').innerText = s.title;
+                document.getElementById('serviceModalBody').innerHTML = `<p style="margin-bottom:20px;">${s.details}</p>`;
+                this.showModal('serviceModal');
             },
 
             /* --- BOOKING WIZARD --- */
@@ -800,7 +625,7 @@
                 const cat = document.getElementById('categorySelect').value;
                 document.getElementById('itemSearch').value = '';
                 document.getElementById('itemSearch').disabled = !cat;
-                document.getElementById('itemSearch').placeholder = cat ? 'Search ' + cat : 'Select category first';
+                document.getElementById('itemSearch').placeholder = cat ? 'Search items...' : 'Select category first';
                 document.getElementById('itemDropdown').innerHTML = '';
                 if (cat) this.renderDropdownItems(cat);
             },
@@ -825,22 +650,26 @@
 
             addItemToQuote: function() {
                 const id = parseInt(document.getElementById('itemSearch').dataset.selectedId);
-                const qty = parseInt(document.getElementById('itemQty').value);
-                if (!id || !qty) return alert("Select item and qty");
+                const qty = parseInt(document.getElementById('itemQty').value) || 1;
+                if (!id) return alert("Please select an item");
+                
                 const itemData = this.state.inventory.find(i => i.id === id);
                 const existing = this.state.currentQuote.items.find(i => i.id === id);
-                if (existing) existing.qty += qty; else this.state.currentQuote.items.push({ ...itemData, qty: qty });
+                if (existing) existing.qty += qty; 
+                else this.state.currentQuote.items.push({ ...itemData, qty: qty });
+                
                 this.renderSelectedItems();
                 document.getElementById('itemSearch').value = '';
+                document.getElementById('itemQty').value = 1;
             },
 
             renderSelectedItems: function() {
                 const container = document.getElementById('selectedItemsList');
-                if (this.state.currentQuote.items.length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--text-grey);">No items.</p>'; return; }
+                if (this.state.currentQuote.items.length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--text-grey); padding: 20px;">No items added.</p>'; return; }
                 container.innerHTML = this.state.currentQuote.items.map(item => `
                     <div class="selected-item">
                         <div><strong>${item.name}</strong> x ${item.qty}</div>
-                        <div><span style="font-weight:bold;">$${item.price * item.qty}</span> <span style="color:var(--danger); cursor:pointer; margin-left:10px;" onclick="app.removeItem(${item.id})">X</span></div>
+                        <div><span>$${item.price * item.qty}</span> <span style="color:var(--danger); cursor:pointer; margin-left:10px;" onclick="app.removeItem(${item.id})"><i class="fas fa-times-circle"></i></span></div>
                     </div>
                 `).join('');
             },
@@ -851,13 +680,13 @@
                 this.state.currentQuote.info = {
                     name: document.getElementById('clientName').value || 'Client',
                     email: document.getElementById('clientEmail').value || 'Email',
-                    event: document.getElementById('eventName').value || 'Event',
-                    venue: document.getElementById('eventVenue').value || 'Venue'
+                    event: document.getElementById('eventName').value || 'Event'
                 };
                 document.getElementById('invoiceClientName').innerText = this.state.currentQuote.info.name;
-                document.getElementById('invoiceEventDetails').innerText = `${this.state.currentQuote.info.event} at ${this.state.currentQuote.info.venue}`;
+                document.getElementById('invoiceEventDetails').innerText = this.state.currentQuote.info.event;
                 document.getElementById('invoiceDate').innerText = new Date().toLocaleDateString();
                 document.getElementById('invoiceNumber').innerText = 'QUO-' + Date.now().toString().slice(-6);
+                
                 let total = 0;
                 document.getElementById('invoiceItemsTable').innerHTML = this.state.currentQuote.items.map(item => {
                     const sub = item.price * item.qty; total += sub; return `<tr><td>${item.name}</td><td>${item.qty}</td><td>$${item.price}</td><td>$${sub}</td></tr>`;
@@ -870,7 +699,7 @@
                 this.state.quotes.push(quote);
                 DB.set('ps_quotes', this.state.quotes);
                 this.renderAdminQuotes();
-                alert('Quote Submitted!');
+                alert('Quote Submitted Successfully!');
                 this.state.currentQuote.items = [];
                 this.showSection('home');
             },
@@ -880,9 +709,8 @@
                 if (document.getElementById('loginUser').value === 'admin' && document.getElementById('loginPass').value === 'admin123') {
                     this.hideModal('loginModal');
                     document.getElementById('navbar').style.display = 'none';
-                    document.querySelector('.mobile-bottom-nav').style.display = 'none'; // Hide bottom nav in admin
+                    document.getElementById('publicBottomNav').style.display = 'none';
                     document.getElementById('admin-section').classList.add('active');
-                    // Show Admin Mobile Header
                     if(window.innerWidth <= 768) document.querySelector('.admin-mobile-header').style.display = 'flex';
                     this.updateStats();
                 } else alert('Wrong credentials');
@@ -890,8 +718,7 @@
 
             logout: function() {
                 document.getElementById('navbar').style.display = 'flex';
-                // Restore Bottom Nav logic
-                if(window.innerWidth <= 768) document.querySelector('.mobile-bottom-nav').style.display = 'flex';
+                document.getElementById('publicBottomNav').style.display = 'flex';
                 document.querySelector('.admin-mobile-header').style.display = 'none';
                 document.getElementById('admin-section').classList.remove('active');
                 this.showSection('home');
@@ -949,10 +776,9 @@
                 
                 if (document.getElementById('checkPublic').checked) {
                     const ticketPrice = parseFloat(document.getElementById('publishPrice').value) || 20;
-                    const newEvent = { id: Date.now(), name: quote.info.event, date: quote.info.date || 'TBD', price: ticketPrice, tickets: 100 };
+                    const newEvent = { id: Date.now(), name: quote.info.event, date: 'TBD', price: ticketPrice };
                     this.state.events.push(newEvent);
                     DB.set('ps_events', this.state.events);
-                    this.renderPublicEvents();
                     this.renderAdminEvents();
                 }
 
@@ -962,58 +788,31 @@
                 alert('Booking Approved.');
             },
 
-            renderPublicEvents: function() {
-                const grid = document.getElementById('eventsGrid');
-                if (this.state.events.length === 0) { grid.innerHTML = '<p style="color: var(--text-grey);">No public events.</p>'; return; }
-                grid.innerHTML = this.state.events.map(e => `
-                    <div class="event-card">
-                        <div class="event-img"><i class="fas fa-calendar-star" style="font-size: 3rem; color: var(--primary);"></i></div>
-                        <div class="event-body">
-                            <div class="event-date"><i class="fas fa-clock"></i> ${e.date}</div>
-                            <h3 style="margin-bottom: 10px;">${e.name}</h3>
-                            <div class="flex justify-between items-center">
-                                <h2 style="color: var(--primary);">$${e.price}</h2>
-                                <button class="btn btn-primary btn-sm">Buy Ticket</button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            },
-
             renderAdminEvents: function() {
-                const grid = document.getElementById('adminEventsGrid');
-                grid.innerHTML = this.state.events.map(e => `
-                    <div class="admin-card">
+                document.getElementById('adminEventsGrid').innerHTML = this.state.events.map(e => `
+                    <div class="card">
                         <h4>${e.name}</h4>
-                        <p>${e.date}</p>
                         <p>Price: $${e.price}</p>
-                        <p>Tickets: ${e.tickets}</p>
                     </div>
                 `).join('');
             },
 
             addEvent: function() {
-                this.state.events.push({ id: Date.now(), name: document.getElementById('newEventName').value, date: document.getElementById('newEventDate').value, price: parseFloat(document.getElementById('newEventPrice').value), tickets: 100 });
+                this.state.events.push({ id: Date.now(), name: document.getElementById('newEventName').value, date: document.getElementById('newEventDate').value, price: parseFloat(document.getElementById('newEventPrice').value) });
                 DB.set('ps_events', this.state.events);
-                this.renderAdminEvents(); this.renderPublicEvents(); this.hideModal('addEventModal'); this.updateStats();
+                this.renderAdminEvents(); this.hideModal('addEventModal');
             },
 
             renderAdminInventory: function() {
-                document.getElementById('adminInventoryList').innerHTML = this.state.inventory.slice(0, 50).map(i => `
-                    <tr><td>${i.name}</td><td>${i.category}</td><td>$${i.price}</td><td><span class="badge badge-success">Available</span></td></tr>
+                document.getElementById('adminInventoryList').innerHTML = this.state.inventory.map(i => `
+                    <tr><td>${i.name}</td><td>${i.category}</td><td>$${i.price}</td></tr>
                 `).join('');
             },
 
             addInventoryItem: function() {
                 this.state.inventory.push({ id: Date.now(), name: document.getElementById('newItemName').value, category: document.getElementById('newItemCat').value, price: parseFloat(document.getElementById('newItemPrice').value) });
                 DB.set('ps_inventory', this.state.inventory);
-                this.renderAdminInventory(); this.hideModal('addInventoryModal'); this.updateStats();
-            },
-
-            updateCMS: function() {
-                document.querySelector('#home-section h1 span').innerText = document.getElementById('cmsTitle').value;
-                document.querySelector('#home-section p').innerText = document.getElementById('cmsDesc').value;
-                alert('Homepage updated!');
+                this.renderAdminInventory(); this.hideModal('addInventoryModal');
             }
         };
 
